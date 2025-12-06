@@ -1,19 +1,21 @@
 // ==UserScript==
-// @name			HWHDungeonExt
-// @name:en			HWHDungeonExt
-// @name:ru			HWHDungeonExt
-// @namespace		HWHDungeonExt
-// @version			0.0.2.1
-// @description		Extension for HeroWarsHelper script
-// @description:en	Extension for HeroWarsHelper script
-// @description:ru	Расширение для скрипта HeroWarsHelper
-// @author			ZingerY, Sniper677
-// @license 		Copyright ZingerY, Sniper677
+// @name            HWHDungeonExt
+// @name:en         HWHDungeonExt
+// @name:ru         HWHDungeonExt
+// @namespace       HWHDungeonExt
+// @version         0.0.2.2
+// @description     Extension for HeroWarsHelper script
+// @description:en  Extension for HeroWarsHelper script
+// @description:ru  Расширение для скрипта HeroWarsHelper
+// @author          ZingerY, Sniper677
+// @license         Copyright ZingerY, Sniper677
 // @homepage        https://github.com/Sniper677/HWH_Addon_Scripts
 // @icon            https://cdn0.iconfinder.com/data/icons/superheros-1/512/Superheroes-04-512.png
-// @match			https://www.hero-wars.com/*
-// @match			https://apps-1701433570146040.apps.fbsbx.com/*
-// @run-at			document-start
+// @match           https://www.hero-wars.com/*
+// @match           https://apps-1701433570146040.apps.fbsbx.com/*
+// @run-at          document-start
+// @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHDungeonExt.user.js
+// @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHDungeonExt.meta.js
 // ==/UserScript==
 
 (function () {
@@ -26,6 +28,7 @@
     console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: red');
 
     const { addExtentionName } = HWHFuncs;
+
     addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
 
     const {
@@ -41,7 +44,7 @@
         setSaveVal,
         popup,
         setIsCancalBattle,
-        random,
+        random
     } = HWHFuncs;
 
     let { buttons, i18nLangData } = HWHData;

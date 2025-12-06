@@ -3,7 +3,7 @@
 // @name:en         HWHRepeatCountExt
 // @name:ru         HWHRepeatCountExt
 // @namespace       HWHRepeatCountExt
-// @version         0.0.4.1
+// @version         0.0.4.2
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -14,6 +14,8 @@
 // @match           https://www.hero-wars.com/*
 // @match           https://apps-1701433570146040.apps.fbsbx.com/*
 // @run-at          document-start
+// @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHRepeatCountExt.user.js
+// @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHRepeatCountExt.meta.js
 // ==/UserScript==
 
 (function () {
@@ -26,14 +28,9 @@
     console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: green');
 
     const { ScriptMenu } = this.HWHClasses;
-    const { addExtentionName } = HWHFuncs;
-    addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
+    const { addExtentionName, I18N, setProgress, popup } = HWHFuncs;
 
-    const {
-        I18N,
-        setProgress,
-        popup
-    } = HWHFuncs;
+    addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
 
     let missionLoopData = null;
     const originalSendsMission = this.sendsMission;
