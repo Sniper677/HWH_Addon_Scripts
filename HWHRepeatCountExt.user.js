@@ -3,7 +3,7 @@
 // @name:en         HWHRepeatCountExt
 // @name:ru         HWHRepeatCountExt
 // @namespace       HWHRepeatCountExt
-// @version         0.0.4.2
+// @version         0.0.4.2.1
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -15,7 +15,7 @@
 // @match           https://apps-1701433570146040.apps.fbsbx.com/*
 // @run-at          document-start
 // @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHRepeatCountExt.user.js
-// @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHRepeatCountExt.meta.js
+// @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/meta/HWHRepeatCountExt.meta.js
 // ==/UserScript==
 
 (function () {
