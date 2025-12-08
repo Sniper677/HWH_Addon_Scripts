@@ -12,7 +12,7 @@ To use these scripts, you need:
 
 1.  A compatible web browser (e.g., Chrome, Firefox, Edge).
 2.  A Userscript Manager extension (e.g., [Tampermonkey](https://www.tampermonkey.net/)).
-3. The [HeroWarsHelper](https://greasyfork.org/en/scripts/450693-herowarshelper) script from Greasy Fork website.
+3.  The [HeroWarsHelper](https://greasyfork.org/en/scripts/450693-herowarshelper) script from Greasy Fork website.
 
 ### Installation Guide
 
@@ -24,8 +24,8 @@ To use these scripts, you need:
 
 | Script Name | Short Description | Filename | Documentation |
 | :--- | :--- | :--- | :--- |
-| Repeat Count Extension | Adds a popup to original campaign mission repeat, which ask for the number of repetitions. | `HWHRepeatCountExt.user.js` | [Go to Doc](../docs/) |
-| Dungeon Extension | Replaces the original algorithm for dungeon titan teams selection. Which gives better results and more titanite. | `HWHDungeonExt.user.js` | [Go to Doc](../docs/) |
+| Repeat Count Extension | Adds a popup to original campaign mission repeat, which ask for the number of repetitions. | `HWHRepeatCountExt.user.js` | [Go to Doc](./docs/) |
+| Dungeon Extension | Replaces the original algorithm for dungeon titan teams selection. Which gives better results and more titanite. | `HWHDungeonExt.user.js` | [Go to Doc](./docs/) |
 
 ---
 
