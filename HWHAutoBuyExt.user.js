@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.1.0
+// @version         0.1.1
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -32,6 +32,11 @@
 
     addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
 
+    // ----- Text formating for console output -----
+    const msglog_text = "";
+    const msglog_prefix = "%c";
+    const msglog_format = "color: cyan";
+
     // -------------------- Configuration model --------------------
     const settings = {
         coin1:      { input: null, default: true },  // Arena Coin
@@ -43,6 +48,7 @@
         maxGear:    { input: null, default: 3 },
         maxFragment:{ input: null, default: 80 },
         minCoins:   { input: null, default: 100000 },
+        dryRun:     { input: null, default: false },
     };
 
     const COINS = [
@@ -122,17 +128,21 @@
 
     // -------------------- Auto-buy core --------------------
     async function autoBuyFromShops() {
-        console.log('=== AUTO-BUY START ===');
-        setProgress('Starting Auto-Buy...');
+        console.log(msglog_prefix + '#----------------------------------------', msglog_format);
+        console.log(msglog_prefix + '# ' + GM_info.script.name + ' by ' + GM_info.script.author, msglog_format);
+        console.log(msglog_prefix + '#----------------------------------------', msglog_format);
+        console.log(msglog_prefix + '=== ' + GM_info.script.name + ' START ===', msglog_format);
+        setProgress('Starting ' + GM_info.script.name + '...');
 
         // Read configuration from storage so we don't depend on inputs being present
-        const maxGear     = getSaveVal('HWHAutoBuyExtmaxGear',     settings.maxGear.default);
-        const maxFragment = getSaveVal('HWHAutoBuyExtmaxFragment', settings.maxFragment.default);
-        const minCoins    = getSaveVal('HWHAutoBuyExtminCoins',    settings.minCoins.default);
+        const maxGear     = getSaveVal('HWHAutoBuyExt_maxGear',     settings.maxGear.default);
+        const maxFragment = getSaveVal('HWHAutoBuyExt_maxFragment', settings.maxFragment.default);
+        const minCoins    = getSaveVal('HWHAutoBuyExt_minCoins',    settings.minCoins.default);
+        const dryRun      = getSaveVal('HWHAutoBuyExt_dryRun',      settings.dryRun.default);
 
         const enabledCoins = {};
         COINS.forEach((coin) => {
-            enabledCoins[coin.id] = getSaveVal(`HWHAutoBuyExt${coin.setting}`, settings[coin.setting].default);
+            enabledCoins[coin.id] = getSaveVal(`HWHAutoBuyExt_${coin.setting}`, settings[coin.setting].default);
         });
 
         // Fetch server data
@@ -198,7 +208,7 @@
                     const rewardData = slot.reward[rewardType];
                     const amount = Object.values(rewardData)[0];
 
-                    itemsToLog.push(`• ${getItemName(rewardType, rewardData)} (x${amount}) from ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}`);
+                    itemsToLog.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: ${getItemName(rewardType, rewardData)} (x${amount})`);
 
                     const costType = Object.keys(slot.cost)[0];
                     const costCurrencyId = Object.keys(slot.cost[costType])[0];
@@ -206,31 +216,41 @@
                     currencyTracker[costCurrencyId] -= costAmount;
                 }
             }
-        }   
+        }
 
         // Execute queued buys
         if (callsToMake.length > 0) {
             console.log(`Attempting to buy ${callsToMake.length} items...`);
             setProgress(`Buying ${callsToMake.length} items...`);
-            try {
-                const buyResult = await Caller.send(callsToMake);
-                if (buyResult) {
-                    const boughtString = itemsToLog.join('\n');
-                    console.log('%c--- Items Bought Successfully ---', 'color: lightgreen; font-weight: bold;');
-                    console.log(boughtString);
-                    setProgress(`Bought ${itemsToLog.length} items!\n\n${boughtString}`, true);
-                } else {
-                    throw new Error("Buy command failed to return a result.");
+
+            if (dryRun) {
+                console.log('%c--- Dry Run Mode ENABLED: No purchases will be made. ---', 'color: orange; font-weight: bold;');
+                const boughtStringLog = itemsToLog.join('\n');
+                const boughtStringBar = itemsToLog.join('<br>');
+                console.log(boughtStringLog);
+                setProgress(GM_info.script.name + ` (Dry Run): ${itemsToLog.length} items would be bought<br>${boughtStringBar}`, 10000, true);
+            } else {
+                try {
+                    const buyResult = await Caller.send(callsToMake);
+                    if (buyResult) {
+                        const boughtStringLog = itemsToLog.join('\n');
+                        const boughtStringBar = itemsToLog.join('<br>');
+                        console.log('%c--- Items bought successfully ---', 'color: lightgreen; font-weight: bold;');
+                        console.log(boughtStringLog);
+                        setProgress(GM_info.script.name + `: ${itemsToLog.length} items bought<br>${boughtStringBar}`, 10000, true);
+                    } else {
+                        throw new Error("Buy command failed to return a result.");
+                    }
+                } catch (error) {
+                    console.error('An error occurred during purchase:', error);
+                    setProgress('Error during purchase. Check console.', true);
                 }
-            } catch (error) {
-                console.error('An error occurred during purchase:', error);
-                setProgress('Error during purchase. Check console.', true);
             }
         } else {
             console.log('No items to buy based on current settings.');
             setProgress('No items to buy based on current settings.', true);
         }
-        console.log('=== AUTO-BUY END ===');
+        console.log(msglog_prefix + '=== ' + GM_info.script.name + ' END ===', msglog_format);
     }
 
     // -------------------- Controls builder (popup-only; no ScriptMenu needed) --------------------
@@ -250,9 +270,9 @@
             wrap.append(input, text);
             targetEl.appendChild(wrap);
 
-            const savedValue = getSaveVal(`HWHAutoBuyExt${key}`, settings[key].default);
+            const savedValue = getSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
             input.checked = !!savedValue;
-            input.addEventListener('change', (e) => setSaveVal(`HWHAutoBuyExt${key}`, e.target.checked));
+            input.addEventListener('change', (e) => setSaveVal(`HWHAutoBuyExt_${key}`, e.target.checked));
 
             settings[key].input = input;
             return input;
@@ -273,11 +293,11 @@
             wrap.append(cap, input);
             targetEl.appendChild(wrap);
 
-            const savedValue = getSaveVal(`HWHAutoBuyExt${key}`, settings[key].default);
+            const savedValue = getSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
             input.value = savedValue;
             input.addEventListener('input', (e) => {
             const v = parseInt(e.target.value, 10);
-            setSaveVal(`HWHAutoBuyExt${key}`, Number.isFinite(v) ? v : settings[key].default);
+            setSaveVal(`HWHAutoBuyExt_${key}`, Number.isFinite(v) ? v : settings[key].default);
             });
 
             settings[key].input = input;
@@ -338,12 +358,55 @@
 
         // Footer
         const footer = document.createElement('div');
-        footer.style.cssText = 'display:flex; justify-content:flex-end; gap:8px; margin-top:14px;';
+        footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:14px;';
+
+        // Footer left side: Dry Run Checkbox
+        const leftWrap = document.createElement('div');
+        leftWrap.style.cssText = 'display:flex; align-items:center; gap:8px;';
+
+        const dryRunLabel = document.createElement('label');
+        dryRunLabel.style.cssText = 'display:flex; align-items:center; gap:8px;';
+        dryRunLabel.title = 'Simulate purchases without spending coins';
+
+        const dryRunInput = document.createElement('input');
+        dryRunInput.type = 'checkbox';
+        dryRunInput.checked = !!getSaveVal('HWHAutoBuyExt_dryRun', settings.dryRun.default);
+        dryRunInput.addEventListener('change', (e) => setSaveVal('HWHAutoBuyExt_dryRun', e.target.checked));
+
+        const dryRunText = document.createElement('span');
+        dryRunText.textContent = 'Dry Run Mode';
+        dryRunLabel.append(dryRunInput, dryRunText);
+        leftWrap.append(dryRunLabel);
+
+        // Footer right side: Reset + Run buttons
+        const rightWrap = document.createElement('div');
+        rightWrap.style.cssText = 'display:flex; align-items:center; gap:8px;';
+
+        const btnReset = document.createElement('button');
+        btnReset.textContent = 'Reset to Defaults';
+        btnReset.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#444; color:#fff; cursor:pointer;';
+        btnReset.onclick = () => {
+            // Reset all saved settings to defaults and update UI if present
+            Object.keys(settings).forEach((key) => {
+                setSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
+                if (settings[key].input) {
+                    if (settings[key].input.type === 'checkbox') {
+                        settings[key].input.checked = !!settings[key].default;
+                    } else {
+                        settings[key].input.value = settings[key].default;
+                    }
+                }
+            });
+            // Also update the footer Dry Run checkbox
+            dryRunInput.checked = !!settings.dryRun.default;
+        };
+
         const btnRun = document.createElement('button');
         btnRun.textContent = 'Run Auto‑Buy Now';
         btnRun.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#1a7f37; color:#fff; cursor:pointer;';
         btnRun.onclick = async () => { await autoBuyFromShops(); document.body.removeChild(overlay); };
-        footer.append(btnRun);
+        rightWrap.append(btnReset, btnRun);
+        footer.append(leftWrap, rightWrap);
 
         // Assemble and show
         modal.append(header, content, footer);
