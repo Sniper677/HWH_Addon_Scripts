@@ -39,16 +39,17 @@
 
     // -------------------- Configuration model --------------------
     const settings = {
-        coin1:      { input: null, default: true },  // Arena Coin
-        coin2:      { input: null, default: true },  // Grand Arena Coin
-        coin3:      { input: null, default: true },  // Tower Coin
-        coin4:      { input: null, default: true },  // Outland Coin
-        coin5:      { input: null, default: true },  // Soul Coin
-        coin6:      { input: null, default: true },  // Friendship Coin
-        maxGear:    { input: null, default: 3 },
-        maxFragment:{ input: null, default: 80 },
-        minCoins:   { input: null, default: 100000 },
-        dryRun:     { input: null, default: false },
+        coin1:          { input: null, default: true },  // Arena Coin
+        coin2:          { input: null, default: true },  // Grand Arena Coin
+        coin3:          { input: null, default: true },  // Tower Coin
+        coin4:          { input: null, default: true },  // Outland Coin
+        coin5:          { input: null, default: true },  // Soul Coin
+        coin6:          { input: null, default: true },  // Friendship Coin
+        maxGear:        { input: null, default: 3 },
+        maxFragment:    { input: null, default: 80 },
+        maxFragmentRed: { input: null, default: 200 },
+        minCoins:       { input: null, default: 100000 },
+        dryRun:         { input: null, default: false },
     };
 
     const COINS = [
@@ -93,7 +94,7 @@
                     color: 'green',
                 },
                 {
-                    get name()  { return '<span style="color: wwhite; font-size: 24px;">⚙</span>'; },
+                    get name()  { return '<span style="color: white; font-size: 28px;">⚙</span>'; },
                     get title() { return 'Open a popup with Auto Buy settings (checkboxes & inputs).'; },
                     onClick: autoBuyConfig,
                     hide: false,
@@ -135,10 +136,11 @@
         setProgress('Starting ' + GM_info.script.name + '...');
 
         // Read configuration from storage so we don't depend on inputs being present
-        const maxGear     = getSaveVal('HWHAutoBuyExt_maxGear',     settings.maxGear.default);
-        const maxFragment = getSaveVal('HWHAutoBuyExt_maxFragment', settings.maxFragment.default);
-        const minCoins    = getSaveVal('HWHAutoBuyExt_minCoins',    settings.minCoins.default);
-        const dryRun      = getSaveVal('HWHAutoBuyExt_dryRun',      settings.dryRun.default);
+        const maxGear        = getSaveVal('HWHAutoBuyExt_maxGear',        settings.maxGear.default);
+        const maxFragment    = getSaveVal('HWHAutoBuyExt_maxFragment',    settings.maxFragment.default);
+        const maxFragmentRed = getSaveVal('HWHAutoBuyExt_maxFragmentRed', settings.maxFragmentRed.default);
+        const minCoins       = getSaveVal('HWHAutoBuyExt_minCoins',       settings.minCoins.default);
+        const dryRun         = getSaveVal('HWHAutoBuyExt_dryRun',         settings.dryRun.default);
 
         const enabledCoins = {};
         COINS.forEach((coin) => {
@@ -191,8 +193,13 @@
                         const inventoryCount = (inventory[rewardType] && inventory[rewardType][itemId]) ? inventory[rewardType][itemId] : 0;
 
                         // Max caps
-                        if ((rewardType === 'gear' /* || rewardType === 'scroll' if present */) && inventoryCount >= maxGear) { shouldBuy = false; break; }
-                        if ((rewardType === 'fragmentGear' || rewardType === 'fragmentScroll') && inventoryCount >= maxFragment) { shouldBuy = false; break; }
+                        let maxFragmentToCheck = maxFragment;
+                        if (5 == Object.values(rewardData)[0]) {
+                            maxFragmentToCheck = maxFragmentRed;
+                        }
+                        //if ((rewardType === 'gear' /* || rewardType === 'scroll' if present */) && inventoryCount >= maxGear) { shouldBuy = false; break; }
+                        if ((rewardType === 'gear' || rewardType === 'scroll') && inventoryCount >= maxGear) { shouldBuy = false; break; }
+                        if ((rewardType === 'fragmentGear' || rewardType === 'fragmentScroll') && inventoryCount >= maxFragmentToCheck) { shouldBuy = false; break; }
                     }
                 }
 
@@ -207,6 +214,7 @@
                     const rewardType = Object.keys(slot.reward)[0];
                     const rewardData = slot.reward[rewardType];
                     const amount = Object.values(rewardData)[0];
+                    const itemId = Object.keys(rewardData)[0];
 
                     itemsToLog.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: ${getItemName(rewardType, rewardData)} (x${amount})`);
 
@@ -214,6 +222,9 @@
                     const costCurrencyId = Object.keys(slot.cost[costType])[0];
                     const costAmount = slot.cost[costType][costCurrencyId];
                     currencyTracker[costCurrencyId] -= costAmount;
+                    if (inventory[rewardType] && inventory[rewardType][itemId]) {
+                        inventory[rewardType][itemId] += amount;
+                    }
                 }
             }
         }
@@ -314,9 +325,10 @@
         });
 
         // Numeric fields
-        createNumberInput('Max Gear/Scroll Count:', 'e.g., 3', 'maxGear');
-        createNumberInput('Max Fragment Count:',    'e.g., 80', 'maxFragment');
-        createNumberInput('Min Coin Reserve:',      'e.g., 100000', 'minCoins');
+        createNumberInput('Max Gear/Scroll Count:',  'e.g., 3', 'maxGear');
+        createNumberInput('Max Fragment Count:',     'e.g., 80', 'maxFragment');
+        createNumberInput('Max Fragment Red Count:', 'e.g., 200', 'maxFragmentRed');
+        createNumberInput('Min Coin Reserve:',       'e.g., 100000', 'minCoins');
     }
 
     // -------------------- Popup (modal) for configuration --------------------
