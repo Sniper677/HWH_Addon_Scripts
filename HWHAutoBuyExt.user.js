@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.1.1
+// @version         0.2.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
