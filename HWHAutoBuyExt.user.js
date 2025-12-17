@@ -28,7 +28,7 @@
     console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: green');
 
     const { HWHClasses, HWHFuncs, HWHData, cheats, Caller } = this;
-    const { addExtentionName, I18N, setProgress, popup, getSaveVal, setSaveVal } = HWHFuncs;
+    const { addExtentionName, I18N, setProgress, hideProgress, popup, getSaveVal, setSaveVal } = HWHFuncs;
 
     addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
 
@@ -79,7 +79,20 @@
         1632000026: 'Secret Wealth',
     };
 
-    const { buttons } = HWHData;
+    const { buttons, i18nLangData } = HWHData;
+
+    const i18nLangDataEn = {
+        ABE_BTN: 'Auto Buy Items',
+        ABE_BTN_TITLE: 'Automatically buys allowed items based on your settings.',
+        ABE_BTN_SETTINGS:
+          `<span style="color: white;">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" style="width: 22px;height: 22px;"><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path></svg>
+          </span>`,
+        ABE_BTN_SETTINGS_LEGACY: '<span style="color: white; font-size: 28px;">⚙</span>',
+        ABE_BTN_SETTINGS_TITLE: 'Change settings for HWHAutoBuyExt',
+        NO_ITEMS_TO_BUY: 'No items to buy based on current settings.',
+    };
+    i18nLangData['en'] = Object.assign(i18nLangData['en'], i18nLangDataEn);
 
     // Run button
     const HWHAutoBuyExtButton = {
@@ -87,15 +100,20 @@
             isCombine: true,
             combineList: [
                 {
-                    get name()  { return 'Auto Buy Items'; },
-                    get title() { return 'Automatically buys allowed items from shops with ID < 11 based on your settings.'; },
+                    get name()  { return I18N('ABE_BTN') },
+                    get title() { return I18N('ABE_BTN_TITLE') },
                     onClick: autoBuyFromShops,
                     hide: false,
                     color: 'green',
                 },
                 {
-                    get name()  { return '<span style="color: white; font-size: 28px;">⚙</span>'; },
-                    get title() { return 'Open a popup with Auto Buy settings (checkboxes & inputs).'; },
+                    get name() {
+                        if (compareVersions(scriptInfo.version, '2.400') >= 0) {
+                            return I18N('ABE_BTN_SETTINGS');
+                        }
+                        return I18N('ABE_BTN_SETTINGS_LEGACY');
+                    },
+                    get title() { return I18N('ABE_BTN_SETTINGS_TITLE') },
                     onClick: autoBuyConfig,
                     hide: false,
                     color: 'green',
@@ -106,6 +124,24 @@
 
     Object.assign(buttons, HWHAutoBuyExtButton)
     this.HWHData.buttons = buttons;
+
+    // -------------------- Helper: compare script versions --------------------
+    function compareVersions(version1, version2) {
+        const v1 = version1.split('.').map(Number);
+        const v2 = version2.split('.').map(Number);
+
+        const maxLength = Math.max(v1.length, v2.length);
+
+        for (let i = 0; i < maxLength; i++) {
+            const num1 = v1[i] || 0;
+            const num2 = v2[i] || 0;
+
+            if (num1 > num2) return 1;
+            if (num1 < num2) return -1;
+        }
+
+        return 0;
+    }
 
     // -------------------- Helper: translate reward to name --------------------
     function getItemName(rewardType, rewardData) {
@@ -153,6 +189,7 @@
 
         const callsToMake = [];
         const itemsToLog = [];
+        const itemsToBar = [];
 
         for (const shopId in shops) {
             if (parseInt(shopId, 10) >= 11) continue;
@@ -217,6 +254,7 @@
                     const itemId = Object.keys(rewardData)[0];
 
                     itemsToLog.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: ${getItemName(rewardType, rewardData)} (x${amount})`);
+                    itemsToBar.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: <span style="color: white;">${getItemName(rewardType, rewardData)}</span> (<span style="color: cyan;">x${amount}</span>)`);
 
                     const costType = Object.keys(slot.cost)[0];
                     const costCurrencyId = Object.keys(slot.cost[costType])[0];
@@ -234,21 +272,27 @@
             console.log(`Attempting to buy ${callsToMake.length} items...`);
             setProgress(`Buying ${callsToMake.length} items...`);
 
+            const boughtStringLog = itemsToLog.join('\n');
+            const boughtStringBar = itemsToBar.join('<br>');
+            let setProgressMessage = `${GM_info.script.name} `;
+
+            if (dryRun) { setProgressMessage += `[ <span style="color: orange;">Dry Run</span> ] ` }
+            setProgressMessage += `: <span style="color: green;">${itemsToBar.length}</span> items `;
+            if (dryRun) { setProgressMessage += `would be ` }
+            setProgressMessage += `bought<br>`;
+            setProgressMessage += `<span style="font-size: 15px;">${boughtStringBar}</span>`;
+
             if (dryRun) {
                 console.log('%c--- Dry Run Mode ENABLED: No purchases will be made. ---', 'color: orange; font-weight: bold;');
-                const boughtStringLog = itemsToLog.join('\n');
-                const boughtStringBar = itemsToLog.join('<br>');
                 console.log(boughtStringLog);
-                setProgress(GM_info.script.name + ` (Dry Run): ${itemsToLog.length} items would be bought<br>${boughtStringBar}`, 10000, true);
+                setProgress(setProgressMessage, 10000, hideProgress);
             } else {
                 try {
                     const buyResult = await Caller.send(callsToMake);
                     if (buyResult) {
-                        const boughtStringLog = itemsToLog.join('\n');
-                        const boughtStringBar = itemsToLog.join('<br>');
                         console.log('%c--- Items bought successfully ---', 'color: lightgreen; font-weight: bold;');
                         console.log(boughtStringLog);
-                        setProgress(GM_info.script.name + `: ${itemsToLog.length} items bought<br>${boughtStringBar}`, 10000, true);
+                        setProgress(setProgressMessage, 10000, hideProgress);
                     } else {
                         throw new Error("Buy command failed to return a result.");
                     }
@@ -258,8 +302,8 @@
                 }
             }
         } else {
-            console.log('No items to buy based on current settings.');
-            setProgress('No items to buy based on current settings.', true);
+            console.log(I18N('NO_ITEMS_TO_BUY'));
+            setProgress(I18N('NO_ITEMS_TO_BUY'), true);
         }
         console.log(msglog_prefix + '=== ' + GM_info.script.name + ' END ===', msglog_format);
     }
