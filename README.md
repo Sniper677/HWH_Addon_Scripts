@@ -4,13 +4,13 @@ This is the official documentation for the addon scripts designed to extend the 
 
 ## 🚀 Project Overview
 
-This repository contains a collection of **Userscripts** (in the `.user.js` format) executed via browser extensions like **Tampermonkey** or **Violentmonkey**. These scripts provide additional features and quality-of-life improvements for the Hero Wars game.
+This repository contains a collection of **Userscripts** (in the `.user.js` format) executed via browser extensions like **Tampermonkey** or **Violentmonkey**. These scripts provide additional features and quality-of-life improvements for the [Hero Wars](https://www.hero-wars.com/) browser game.
 
 ## ⚠️ Credits & Disclaimer
 
 Note: Portions of the code here may be derived from or inspired by external community resources and public repositories.
 All credits go to the original authors for their contributions.
-Special thanks to the HeroWarsHelper community and Zingery for the foundation.
+Special thanks to the HeroWarsHelper community and ZingerY for the foundation.
 
 ## 🛠 Prerequisites & General Installation
 
