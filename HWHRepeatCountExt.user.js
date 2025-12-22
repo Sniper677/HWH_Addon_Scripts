@@ -3,7 +3,7 @@
 // @name:en         HWHRepeatCountExt
 // @name:ru         HWHRepeatCountExt
 // @namespace       HWHRepeatCountExt
-// @version         0.0.4.2.1
+// @version         0.1.0.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -28,9 +28,42 @@
     console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: green');
 
     const { ScriptMenu } = this.HWHClasses;
-    const { addExtentionName, I18N, setProgress, popup } = HWHFuncs;
+    const { addExtentionName } = HWHFuncs;
 
     addExtentionName(GM_info.script.name, GM_info.script.version, GM_info.script.author);
+
+    const {
+        getInput,
+        setProgress,
+        hideProgress,
+        I18N,
+        popup,
+    } = HWHFuncs;
+
+    let { i18nLangData } = HWHData;
+
+    const i18nLangDataEn = {
+        HWHRCE: `${GM_info.script.name}`,
+        HWHRCE_STOPPED: `${GM_info.script.name} stopped`,
+        HWHRCE_COMPLETED: `${GM_info.script.name} completed`,
+        HWHRCE_MSG_REPEAT_COUNT: 'Enter the number of Repetitions',
+        HWHRCE_REPETITIONS: 'Repetitions',
+        HWHRCE_BTN_CANCEL: 'Cancel',
+        HWHRCE_BTN_REPEAT: 'Repeat',
+        HWHRCE_BTN_OK: 'OK',
+    };
+    const i18nLangDataRu = {
+        HWHRCE: `${GM_info.script.name}`,
+        HWHRCE_STOPPED: `${GM_info.script.name} остановился`,
+        HWHRCE_COMPLETED: `${GM_info.script.name} завершенный`,
+        HWHRCE_MSG_REPEAT_COUNT: 'Введите количество повторений',
+        HWHRCE_REPETITIONS: 'Повторения',
+        HWHRCE_BTN_CANCEL: 'Отмена',
+        HWHRCE_BTN_REPEAT: 'Повторить',
+        HWHRCE_BTN_OK: 'ХОРОШО',
+    };
+    i18nLangData['en'] = Object.assign(i18nLangData['en'], i18nLangDataEn);
+    i18nLangData['ru'] = Object.assign(i18nLangData['ru'], i18nLangDataRu);
 
     let missionLoopData = null;
     const originalSendsMission = this.sendsMission;
@@ -56,11 +89,12 @@
 
                 const finalCount = missionInfo.count;
                 setProgress('');
-                await popup.confirm(`${I18N('STOPPED')}<br>${I18N('REPETITIONS')}: ${finalCount}`, [{
-                    msg: 'Ok',
-                    result: true,
-                    color: 'green'
-                }]);
+                await popup.confirm(
+                    `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
+                    [
+                        { msg: I18N('HWHRCE_BTN_OK'), result: true, color: 'green' }
+                    ]
+                );
 
                 return;
             }
@@ -70,9 +104,9 @@
         } else {
             // --- NO LOOP ACTIVE (1st run) ---
             const repeatCount = await popup.confirm(
-                I18N('MSG_REPEAT_MISSION'),
+                I18N('HWHRCE_MSG_REPEAT_COUNT'),
                 [
-                    { msg: I18N('BTN_REPEAT'), isInput: true, default: Number(localStorage.getItem('HWHRepeatCountExt')) || 10, color: 'green' },
+                    { msg: I18N('HWHRCE_BTN_REPEAT'), isInput: true, default: Number(localStorage.getItem('HWHRepeatCountExt')) || 10, color: 'green' },
                 ]
             );
 
