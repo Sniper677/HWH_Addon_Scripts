@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.0.2.2.1
+// @version         0.1.0.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -50,26 +50,32 @@
     let { buttons, i18nLangData } = HWHData;
 
     const i18nLangDataEn = {
-        DUNGEON_STOPPED: 'Dungeon stopped',
-        DUNGEON_STOPPED_MANUALLY: 'Dungeon manually stopped',
-        DUNGEON_COMPLETED: 'Dungeon completed',
-        STOP_DUNGEON_BTN: 'Dungeon Stop',
-        STOP_DUNGEON_BTN_TITLE: 'Stops dungeon farming'
+        HWHDE: `${GM_info.script.name}`,
+        HWHDE_BTN: 'Dungeon Stop',
+        HWHDE_BTN_TITLE: 'Stops dungeon farming',
+        HWHDE_STOPPED: `${GM_info.script.name} stopped`,
+        HWHDE_STOPPED_MANUALLY: `${GM_info.script.name} manually stopped`,
+        HWHDE_COMPLETED: `${GM_info.script.name} completed`,
+        HWHDE_TITANITE: 'Titanite',
+        HWHDE_SRV_CON_LOST: 'Connection to server lost',
     };
     const i18nLangDataRu = {
-        DUNGEON_STOPPED: 'Подземелье остановлено',
-        DUNGEON_STOPPED_MANUALLY: 'Подземелье остановлено вручную',
-        DUNGEON_COMPLETED: 'Подземелье завершено',
-        STOP_DUNGEON_BTN: 'Подземелье Стоп',
-        STOP_DUNGEON_BTN_TITLE: 'Останавливает фарм подземелий'
+        HWHDE: `${GM_info.script.name}`,
+        HWHDE_BTN: 'Подземелье Стоп',
+        HWHDE_BTN_TITLE: 'Останавливает фарм подземелий',
+        HWHDE_STOPPED: 'Подземелье остановлено',
+        HWHDE_STOPPED_MANUALLY: 'Подземелье остановлено вручную',
+        HWHDE_COMPLETED: 'Подземелье завершено',
+        HWHDE_TITANITE: 'Титанит',
+        HWHDE_SRV_CON_LOST: 'Соединение с сервером потеряно',
     };
     i18nLangData['en'] = Object.assign(i18nLangData['en'], i18nLangDataEn);
     i18nLangData['ru'] = Object.assign(i18nLangData['ru'], i18nLangDataRu);
 
     const stopDungeonButton = {
         stopDungeonButton: {
-            get name() { return I18N('STOP_DUNGEON_BTN'); },
-            get title() { return I18N('STOP_DUNGEON_BTN_TITLE'); },
+            get name() { return I18N('HWHDE_BTN'); },
+            get title() { return I18N('HWHDE_BTN_TITLE'); },
             onClick: stopDungeon,
             hide: false,
             color: 'red'
@@ -90,6 +96,8 @@
         let maxDungeonActivity = 150;
         let limitDungeonActivity = 30180;
         let countShowStats = 1;
+        let dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
+        let maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
         //let fastMode = isChecked('fastMode');
         let end = false;
 
@@ -137,9 +145,10 @@
                 ident: 'inventoryGet',
             }, ],
         };
-        this.start = async function (titanit) {
-            //maxDungeonActivity = titanit > limitDungeonActivity ? limitDungeonActivity : titanit;
-            maxDungeonActivity = titanit || getInput('countTitanit');
+        this.start = async function (titanite) {
+            //maxDungeonActivity = titanite > limitDungeonActivity ? limitDungeonActivity : titanite;
+            maxDungeonActivity = titanite || getInput('countTitanit');
+            maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
             send(JSON.stringify(callsExecuteDungeon), startDungeon);
         };
 
@@ -159,6 +168,7 @@
             let teamGetAll = res[1].result.response;
             let teamGetFavor = res[2].result.response;
             dungeonActivity = res[3].result.response.stat.todayDungeonActivity;
+            dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
             startDungeonActivity = res[3].result.response.stat.todayDungeonActivity;
             countPredictionCard = res[4].result.response.consumable[81];
             titansStates = dungeonGetInfo.states.titans;
@@ -201,6 +211,10 @@
                 case 'water':
                     return [4000, 4001, 4002, 4003].filter((e) => !titansStates[e]?.isDead);
                 case 'fire':
+                    /**
+                        Disabled Asherona as she loses HP too quickly and auto run stops again and again.
+                    return [4010, 4011, 4012, 4013, 4014].filter((e) => !titansStates[e]?.isDead);
+                    */
                     return [4010, 4011, 4012, 4013].filter((e) => !titansStates[e]?.isDead);
                 case 'earth':
                     /**
@@ -238,18 +252,19 @@
             checkTalent(dungeonInfo);
             // console.log(dungeonInfo, dungeonActivity);
             maxDungeonActivity = getInput('countTitanit');
-            setProgress(`${I18N('DUNGEON')}: ${I18N('TITANIT')} ${dungeonActivity}/${maxDungeonActivity} ${talentMsg}`);
+            maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
+            setProgress(`${I18N('HWHDE')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${talentMsg}`, false, stopDungeon);
             //setProgress('Dungeon: Титанит ' + dungeonActivity + '/' + maxDungeonActivity);
             if (dungeonActivity >= maxDungeonActivity) {
                 //endDungeon('Стоп подземка,', 'набрано титанита: ' + dungeonActivity + '/' + maxDungeonActivity);
-                endDungeon('Stop dungeon,', 'titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
+                endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
                 return;
             }
             let activity = dungeonActivity - startDungeonActivity;
             titansStates = dungeonInfo.states.titans;
             if (stopDung) {
                 //endDungeon('Стоп подземка,', 'набрано титанита: ' + dungeonActivity + '/' + maxDungeonActivity);
-                endDungeon('Stop dungeon,', 'titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
+                endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
                 return;
             }
             /*if (activity / 1000 > countShowStats) {
@@ -299,7 +314,8 @@
                 const itemId = Object.keys(reward[type]).pop();
                 const count = reward[type][itemId];
                 const itemName = cheats.translate(`LIB_${type.toUpperCase()}_NAME_${itemId}`);
-                talentMsgReward += `<br> ${count} ${itemName}`;
+                //talentMsgReward += `<br>• <span style="font-size: 15px; color: white;">${itemName} (<span style="color: cyan;">x${count}</span>)</span>`;
+                talentMsgReward += `<br>• <span style="color: white;">${itemName} (<span style="color: cyan;">x${count}</span>)</span>`;
                 doorsAmount++;
             }
             talentMsg = `<br>TMNT Talent: ${doorsAmount}/3 ${talentMsgReward}<br>`;
@@ -648,13 +664,15 @@
         /** Проверяет состояние титана */
         function checkTitan(id, energy, percentHP) {
             switch (id) {
+                // Earth: Tank Angus
                 case '4020':
-                    return percentHP > 0.25 ||
-                        (energy == 1000 && percentHP > 0.05);
+                    return percentHP > 0.25 || (energy == 1000 && percentHP > 0.05);
                     break;
+                // Fire: Tank Moloch
                 case '4010':
                     return percentHP + energy / 2000.0 > 0.63;
                     break;
+                // Water: Tank Sigurd
                 case '4000':
                     return percentHP > 0.62 || (energy < 1000 && ((percentHP > 0.45 && energy >= 400) || (percentHP > 0.3 && energy >= 670)));
             }
@@ -734,8 +752,8 @@
                     countPredictionCard--;
                 } else {
                     const timer = getTimer(battleInfo.battleTime);
-                    console.log(timer);
-                    await countdownTimer(timer, `${I18N('DUNGEON')}: ${I18N('TITANIT')} ${dungeonActivity}/${maxDungeonActivity} ${talentMsg}`);
+                    console.log("Timer set: " + timer + " sec");
+                    await countdownTimer(timer, `${I18N('HWHDE')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${talentMsg}`, stopDungeon);
                 }
                 const calls = [{
                     name: 'dungeonEndBattle',
@@ -759,6 +777,7 @@
                 }
                 let dungeonGetInfo = battleResult.dungeon ?? battleResult;
                 dungeonActivity += battleResult.reward.dungeonActivity ?? 0;
+                dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
                 checkFloor(dungeonGetInfo);
             } else {
                 //endDungeon('Потеряна связь с сервером игры!', 'break');
@@ -820,7 +839,7 @@
             //console.log('Скорость сбора: ' + Math.round((3600 * activity) / workTime.all) + ' титанита/час');
             //console.log('Время раскопок: ');
             console.log('Titanite collected: ', activity);
-            console.log('Collection speed: ' + Math.round((3600 * activity) / workTime.all) + ' titanite/hour');
+            console.log('Collection speed: ' + Math.round((3600 * activity) / workTime.all) + ' Titanite/hour');
             console.log('Time for excavations: ');
             for (let i in workTime) {
                 let timeNow = workTime[i];
@@ -843,12 +862,12 @@
                 console.log(reason, info);
                 showStats();
                 if (info == 'break') {
-                    setProgress(`${I18N('DUNGEON_STOPPED')}: ${I18N('TITANIT')} ${dungeonActivity}/${maxDungeonActivity} ${I18N('SERVER_LOST_CONNECTION')}`, false, hideProgress);
+                    setProgress(`${I18N('HWHDE_STOPPED')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${I18N('HWHDE_SRV_CON_LOST')}`, false, hideProgress);
                 } else {
                     if (stopDung == true) {
-                        setProgress(`${I18N('DUNGEON_STOPPED_MANUALLY')}: ${I18N('TITANIT')} ${dungeonActivity}/${maxDungeonActivity}`, false, hideProgress);
+                        setProgress(`${I18N('HWHDE_STOPPED_MANUALLY')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB}`, false, hideProgress);
                     } else {
-                        setProgress(`${I18N('DUNGEON_COMPLETED')}: ${I18N('TITANIT')} ${dungeonActivity}/${maxDungeonActivity}`, false, hideProgress);
+                        setProgress(`${I18N('HWHDE_COMPLETED')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB}`, false, hideProgress);
                     }
                 }
                 setTimeout(cheats.refreshGame, 1000);
