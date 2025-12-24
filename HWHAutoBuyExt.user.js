@@ -3,11 +3,11 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.2.0
+// @version         0.2.0.1
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
-// @author          Sniper677
+// @author          Bartjan, Rlogin44/fpoupeli, Sniper677
 // @license         Copyright Sniper677
 // @homepage        https://github.com/Sniper677/HWH_Addon_Scripts
 // @icon            https://cdn0.iconfinder.com/data/icons/superheros-1/512/Superheroes-04-512.png
@@ -308,12 +308,28 @@
         console.log(msglog_prefix + '=== ' + GM_info.script.name + ' END ===', msglog_format);
     }
 
-    // -------------------- Controls builder (popup-only; no ScriptMenu needed) --------------------
+    // -------------------- Controls builder (side-by-side layout) --------------------
     function autoBuyControls(targetEl) {
-        // Helper: create checkbox
-        const createCheckbox = (label, tooltip, key) => {
+        // 1. Create Layout Container (Flexbox)
+        const mainLayout = document.createElement('div');
+        mainLayout.style.cssText = 'display:flex; gap:16px; align-items:stretch; font-size:14px;';
+
+        // 2. Create Left Column (Checkboxes)
+        const leftCol = document.createElement('div');
+        leftCol.style.cssText = 'flex:1; display:flex; flex-direction:column;';
+
+        // 3. Create Vertical Divider
+        const divider = document.createElement('div');
+        divider.style.cssText = 'width:1px; background:#444; margin:0 8px;';
+
+        // 4. Create Right Column (Numeric Inputs)
+        const rightCol = document.createElement('div');
+        rightCol.style.cssText = 'flex:1; display:flex; flex-direction:column;';
+
+        // Helper: create checkbox (modified to accept target column)
+        const createCheckbox = (label, tooltip, key, column) => {
             const wrap = document.createElement('label');
-            wrap.style.cssText = 'display:flex; align-items:center; gap:8px; margin:4px 0;';
+            wrap.style.cssText = 'display:flex; align-items:center; gap:8px; margin:4px 0; cursor:pointer; font-size:14px;';
             wrap.title = tooltip;
 
             const input = document.createElement('input');
@@ -321,9 +337,10 @@
 
             const text = document.createElement('span');
             text.textContent = label;
+            text.style.fontSize = '14px';
 
             wrap.append(input, text);
-            targetEl.appendChild(wrap);
+            column.appendChild(wrap);
 
             const savedValue = getSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
             input.checked = !!savedValue;
@@ -333,46 +350,56 @@
             return input;
         };
 
-        // Helper: create numeric input
-        const createNumberInput = (label, placeholder, key) => {
+        // Helper: create numeric input (modified to accept target column)
+        const createNumberInput = (label, placeholder, key, column) => {
             const wrap = document.createElement('label');
-            wrap.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin:6px 0;';
+            wrap.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin:6px 0; font-size:14px;';
 
             const cap = document.createElement('span');
             cap.textContent = label;
+            cap.style.fontSize = '12px';
+            cap.style.color = '#ccc';
 
             const input = document.createElement('input');
             input.type = 'number';
             input.placeholder = placeholder;
+            input.style.cssText = 'padding:6px; border-radius:4px; border:1px solid #444; background:#2b2b2b; color:#fff; font-size:14px;';
+            input.onfocus = () => input.style.borderColor = '#666';
+            input.onblur = () => input.style.borderColor = '#444';
 
             wrap.append(cap, input);
-            targetEl.appendChild(wrap);
+            column.appendChild(wrap);
 
             const savedValue = getSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
             input.value = savedValue;
             input.addEventListener('input', (e) => {
-            const v = parseInt(e.target.value, 10);
-            setSaveVal(`HWHAutoBuyExt_${key}`, Number.isFinite(v) ? v : settings[key].default);
+                const v = parseInt(e.target.value, 10);
+                setSaveVal(`HWHAutoBuyExt_${key}`, Number.isFinite(v) ? v : settings[key].default);
             });
 
             settings[key].input = input;
             return input;
         };
 
-        // Coins
+        // --- Fill Left Column (Coins) ---
         COINS.forEach(coin => {
             createCheckbox(
-            `Enable buying with ${coin.name}`,
-            `Allows buying items using ${coin.name}`,
-            coin.setting
+                `Buy with ${coin.name}`,
+                `Allows buying items using ${coin.name}`,
+                coin.setting,
+                leftCol
             );
         });
 
-        // Numeric fields
-        createNumberInput('Max Gear/Scroll Count:',  'e.g., 3', 'maxGear');
-        createNumberInput('Max Fragment Count:',     'e.g., 80', 'maxFragment');
-        createNumberInput('Max Fragment Red Count:', 'e.g., 200', 'maxFragmentRed');
-        createNumberInput('Min Coin Reserve:',       'e.g., 100000', 'minCoins');
+        // --- Fill Right Column (Numeric Fields) ---
+        createNumberInput('Max Gear/Scroll Count:',  'e.g., 3', 'maxGear', rightCol);
+        createNumberInput('Max Fragment Count:',     'e.g., 80', 'maxFragment', rightCol);
+        createNumberInput('Max Fragment Red Count:', 'e.g., 200', 'maxFragmentRed', rightCol);
+        createNumberInput('Min Coin Reserve:',       'e.g., 100000', 'minCoins', rightCol);
+
+        // Assemble everything into the target element
+        mainLayout.append(leftCol, divider, rightCol);
+        targetEl.appendChild(mainLayout);
     }
 
     // -------------------- Popup (modal) for configuration --------------------
@@ -389,27 +416,28 @@
         // Modal panel
         const modal = document.createElement('div');
         modal.style.cssText = `
-          background:#1e1e1e; color:#fff; border-radius:12px;
-          min-width:560px; max-width:90vw; max-height:85vh; overflow:auto;
+          background:#1e1e1e; color:#fff; border-radius:12px; border:1px solid #ffffff;
+          min-width:640px; max-width:90vw; max-height:90vh; overflow:auto;
           box-shadow:0 12px 40px rgba(0,0,0,0.4);
-          padding:16px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+          padding:16px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; font-size:14px;
         `;
 
         // Header
         const header = document.createElement('div');
         header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;';
         const title = document.createElement('h3');
-        title.textContent = 'Auto Buy Settings';
+        title.textContent = 'Settings for HWHAutoBuyExt';
         title.style.margin = '0';
+        title.style.fontSize = '18px';
         const btnClose = document.createElement('button');
-        btnClose.textContent = 'Close';
-        btnClose.style.cssText = 'padding:6px 10px; border-radius:8px; border:1px solid #555; background:#2b2b2b; color:#fff; cursor:pointer;';
+        btnClose.textContent = 'x';
+        btnClose.style.cssText = 'padding:6px 10px; border-radius:8px; border:1px solid #555; background:#2b2b2b; color:#fff; cursor:pointer; font-size:14px;';
         btnClose.onclick = () => document.body.removeChild(overlay);
         header.append(title, btnClose);
 
         // Content
         const content = document.createElement('div');
-        content.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:12px;';
+        content.style.cssText = 'margin:12px 0; font-size:14px;';
         autoBuyControls(content); // Build controls inside the popup
 
         // Footer
@@ -421,8 +449,8 @@
         leftWrap.style.cssText = 'display:flex; align-items:center; gap:8px;';
 
         const dryRunLabel = document.createElement('label');
-        dryRunLabel.style.cssText = 'display:flex; align-items:center; gap:8px;';
-        dryRunLabel.title = 'Simulate purchases without spending coins';
+        dryRunLabel.style.cssText = 'display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;';
+        dryRunLabel.title = 'Simulate purchases without spending anything';
 
         const dryRunInput = document.createElement('input');
         dryRunInput.type = 'checkbox';
@@ -431,6 +459,7 @@
 
         const dryRunText = document.createElement('span');
         dryRunText.textContent = 'Dry Run Mode';
+        dryRunText.style.fontSize = '14px';
         dryRunLabel.append(dryRunInput, dryRunText);
         leftWrap.append(dryRunLabel);
 
@@ -440,7 +469,7 @@
 
         const btnReset = document.createElement('button');
         btnReset.textContent = 'Reset to Defaults';
-        btnReset.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#444; color:#fff; cursor:pointer;';
+        btnReset.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#444; color:#fff; cursor:pointer; font-size:14px;';
         btnReset.onclick = () => {
             // Reset all saved settings to defaults and update UI if present
             Object.keys(settings).forEach((key) => {
@@ -458,8 +487,8 @@
         };
 
         const btnRun = document.createElement('button');
-        btnRun.textContent = 'Run Auto‑Buy Now';
-        btnRun.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#1a7f37; color:#fff; cursor:pointer;';
+        btnRun.textContent = 'Run Now';
+        btnRun.style.cssText = 'padding:8px 14px; border-radius:8px; border:0; background:#1a7f37; color:#fff; cursor:pointer; font-size:14px;';
         btnRun.onclick = async () => { await autoBuyFromShops(); document.body.removeChild(overlay); };
         rightWrap.append(btnReset, btnRun);
         footer.append(leftWrap, rightWrap);
