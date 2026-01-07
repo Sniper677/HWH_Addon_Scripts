@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.2.0.1
+// @version         0.2.1.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -14,6 +14,7 @@
 // @match           https://www.hero-wars.com/*
 // @match           https://apps-1701433570146040.apps.fbsbx.com/*
 // @run-at          document-start
+// @grant           none
 // @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHAutoBuyExt.user.js
 // @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/meta/HWHAutoBuyExt.meta.js
 // ==/UserScript==
@@ -191,6 +192,19 @@
         const itemsToLog = [];
         const itemsToBar = [];
 
+        // Define color mapping for item tiers and set default to 'white'
+        let itemColor = 'white';
+
+        const colorMap = {
+            1: 'graphite',
+            2: 'green',
+            3: 'blue',
+            4: 'violet',
+            5: 'gold',
+            6: 'red',
+            7: 'brown',
+        };
+
         for (const shopId in shops) {
             if (parseInt(shopId, 10) >= 11) continue;
             const currentShop = shops[shopId];
@@ -253,8 +267,21 @@
                     const amount = Object.values(rewardData)[0];
                     const itemId = Object.keys(rewardData)[0];
 
+                    // Determine which library to check (Fragments use the same color as the base item)
+                    const targetLib = rewardType.toLowerCase().includes('scroll') ? 'scroll' : 'gear';
+
+                    // Fetch color from the appropriate library
+                    if (lib.data.inventoryItem[targetLib]) {
+                        const itemLibData = lib.data.inventoryItem[targetLib][itemId];
+                        if (itemLibData && itemLibData.color && colorMap[itemLibData.color]) {
+                            itemColor = colorMap[itemLibData.color];
+                        }
+                    } else {
+                        itemColor = 'white'
+                    }
+
                     itemsToLog.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: ${getItemName(rewardType, rewardData)} (x${amount})`);
-                    itemsToBar.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: <span style="color: white;">${getItemName(rewardType, rewardData)}</span> (<span style="color: cyan;">x${amount}</span>)`);
+                    itemsToBar.push(`• ${SHOP_NAMES[shopId] ?? `Shop ${shopId}`}: <span style="color: ${itemColor};">${getItemName(rewardType, rewardData)}</span> (<span style="color: cyan;">x${amount}</span>)`);
 
                     const costType = Object.keys(slot.cost)[0];
                     const costCurrencyId = Object.keys(slot.cost[costType])[0];
@@ -285,7 +312,7 @@
             if (dryRun) {
                 console.log('%c--- Dry Run Mode ENABLED: No purchases will be made. ---', 'color: orange; font-weight: bold;');
                 console.log(boughtStringLog);
-                setProgress(setProgressMessage, 10000, hideProgress);
+                setProgress(setProgressMessage, false, hideProgress);
             } else {
                 try {
                     const buyResult = await Caller.send(callsToMake);
