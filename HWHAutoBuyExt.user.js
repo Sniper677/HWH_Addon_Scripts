@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.2.1.0
+// @version         0.2.2.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -43,13 +43,15 @@
         coin1:          { input: null, default: true },  // Arena Coin
         coin2:          { input: null, default: true },  // Grand Arena Coin
         coin3:          { input: null, default: true },  // Tower Coin
-        coin4:          { input: null, default: true },  // Outland Coin
-        coin5:          { input: null, default: true },  // Soul Coin
-        coin6:          { input: null, default: true },  // Friendship Coin
+        coin4:          { input: null, default: true },  // Soul Coin
+        coin5:          { input: null, default: true },  // Friendship Coin
+        coin6:          { input: null, default: true },  // Outland Coin
         maxGear:        { input: null, default: 3 },
         maxFragment:    { input: null, default: 80 },
         maxFragmentRed: { input: null, default: 200 },
         minCoins:       { input: null, default: 100000 },
+        minGold:        { input: null, default: 50000000 },
+        startUp:        { input: null, default: false },
         dryRun:         { input: null, default: false },
     };
 
@@ -57,13 +59,13 @@
         { id: '1', name: 'Arena Coin',        setting: 'coin1' },
         { id: '2', name: 'Grand Arena Coin',  setting: 'coin2' },
         { id: '3', name: 'Tower Coin',        setting: 'coin3' },
-        { id: '4', name: 'Outland Coin',      setting: 'coin4' },
-        { id: '5', name: 'Soul Coin',         setting: 'coin5' },
-        { id: '6', name: 'Friendship Coin',   setting: 'coin6' },
+        { id: '4', name: 'Soul Coin',         setting: 'coin4' },
+        { id: '5', name: 'Friendship Coin',   setting: 'coin5' },
+        { id: '6', name: 'Outland Coin',      setting: 'coin6' },
     ];
 
     const ALLOWED_COIN_IDS = COINS.map((coin) => coin.id);
-    const ALLOWED_REWARD_TYPES = ['gear', 'fragmentGear', 'fragmentScroll'];
+    const ALLOWED_REWARD_TYPES = ['gear', 'scroll', 'fragmentGear', 'fragmentScroll'];
 
     const SHOP_NAMES = {
         1: 'Town Shop',
@@ -86,9 +88,9 @@
         ABE_BTN: 'Auto Buy Items',
         ABE_BTN_TITLE: 'Automatically buys allowed items based on your settings.',
         ABE_BTN_SETTINGS:
-          `<span style="color: white;">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" style="width: 22px;height: 22px;"><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path></svg>
-          </span>`,
+            `<span style="color: white;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" style="width: 22px;height: 22px;"><path d="M487.4 315.7l-42.6-24.6c4.3-23.2 4.3-47 0-70.2l42.6-24.6c4.9-2.8 7.1-8.6 5.5-14-11.1-35.6-30-67.8-54.7-94.6-3.8-4.1-10-5.1-14.8-2.3L380.8 110c-17.9-15.4-38.5-27.3-60.8-35.1V25.8c0-5.6-3.9-10.5-9.4-11.7-36.7-8.2-74.3-7.8-109.2 0-5.5 1.2-9.4 6.1-9.4 11.7V75c-22.2 7.9-42.8 19.8-60.8 35.1L88.7 85.5c-4.9-2.8-11-1.9-14.8 2.3-24.7 26.7-43.6 58.9-54.7 94.6-1.7 5.4.6 11.2 5.5 14L67.3 221c-4.3 23.2-4.3 47 0 70.2l-42.6 24.6c-4.9 2.8-7.1 8.6-5.5 14 11.1 35.6 30 67.8 54.7 94.6 3.8 4.1 10 5.1 14.8 2.3l42.6-24.6c17.9 15.4 38.5 27.3 60.8 35.1v49.2c0 5.6 3.9 10.5 9.4 11.7 36.7 8.2 74.3 7.8 109.2 0 5.5-1.2 9.4-6.1 9.4-11.7v-49.2c22.2-7.9 42.8-19.8 60.8-35.1l42.6 24.6c4.9 2.8 11 1.9 14.8-2.3 24.7-26.7 43.6-58.9 54.7-94.6 1.5-5.5-.7-11.3-5.6-14.1zM256 336c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z"></path></svg>
+            </span>`,
         ABE_BTN_SETTINGS_LEGACY: '<span style="color: white; font-size: 28px;">⚙</span>',
         ABE_BTN_SETTINGS_TITLE: 'Change settings for HWHAutoBuyExt',
         NO_ITEMS_TO_BUY: 'No items to buy based on current settings.',
@@ -177,6 +179,7 @@
         const maxFragment    = getSaveVal('HWHAutoBuyExt_maxFragment',    settings.maxFragment.default);
         const maxFragmentRed = getSaveVal('HWHAutoBuyExt_maxFragmentRed', settings.maxFragmentRed.default);
         const minCoins       = getSaveVal('HWHAutoBuyExt_minCoins',       settings.minCoins.default);
+        const minGold        = getSaveVal('HWHAutoBuyExt_minGold',        settings.minGold.default);
         const dryRun         = getSaveVal('HWHAutoBuyExt_dryRun',         settings.dryRun.default);
 
         const enabledCoins = {};
@@ -312,6 +315,7 @@
             if (dryRun) {
                 console.log('%c--- Dry Run Mode ENABLED: No purchases will be made. ---', 'color: orange; font-weight: bold;');
                 console.log(boughtStringLog);
+                console.log(JSON.stringify(callsToMake, null, 2));
                 setProgress(setProgressMessage, false, hideProgress);
             } else {
                 try {
@@ -409,6 +413,9 @@
         };
 
         // --- Fill Left Column (Coins) ---
+        const leftColHr = document.createElement('div');
+        leftColHr.style.cssText = 'height:1px; background:#444; margin:8px 0;';
+        leftCol.appendChild(leftColHr);
         COINS.forEach(coin => {
             createCheckbox(
                 `Buy with ${coin.name}`,
@@ -419,6 +426,10 @@
         });
 
         // --- Fill Right Column (Numeric Fields) ---
+        createNumberInput('Min Gold Reserve:', 'e.g., 50000000', 'minGold', rightCol);
+        const rightColHr = document.createElement('div');
+        rightColHr.style.cssText = 'height:1px; background:#444; margin:8px 0;';
+        rightCol.appendChild(rightColHr);
         createNumberInput('Max Gear/Scroll Count:',  'e.g., 3', 'maxGear', rightCol);
         createNumberInput('Max Fragment Count:',     'e.g., 80', 'maxFragment', rightCol);
         createNumberInput('Max Fragment Red Count:', 'e.g., 200', 'maxFragmentRed', rightCol);
@@ -452,15 +463,27 @@
         // Header
         const header = document.createElement('div');
         header.style.cssText = 'display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;';
+
         const title = document.createElement('h3');
         title.textContent = 'Settings for HWHAutoBuyExt';
         title.style.margin = '0';
         title.style.fontSize = '18px';
+
+        const headerRight = document.createElement('div');
+        headerRight.style.cssText = 'display:flex; align-items:center; gap:12px;';
+
+        const infoLabel = document.createElement('span');
+        infoLabel.textContent = 'ⓘ';
+        infoLabel.style.cssText = 'font-size: 18px; color: #888; cursor: help;';
+        infoLabel.title = `${GM_info.script.name} v${GM_info.script.version}`;
+
         const btnClose = document.createElement('button');
         btnClose.textContent = 'x';
         btnClose.style.cssText = 'padding:6px 10px; border-radius:8px; border:1px solid #555; background:#2b2b2b; color:#fff; cursor:pointer; font-size:14px;';
         btnClose.onclick = () => document.body.removeChild(overlay);
-        header.append(title, btnClose);
+
+        headerRight.append(infoLabel, btnClose);
+        header.append(title, headerRight);
 
         // Content
         const content = document.createElement('div');
@@ -471,10 +494,26 @@
         const footer = document.createElement('div');
         footer.style.cssText = 'display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:14px;';
 
-        // Footer left side: Dry Run Checkbox
+        // Footer left side: Dry Run & StartUp Checkbox
         const leftWrap = document.createElement('div');
         leftWrap.style.cssText = 'display:flex; align-items:center; gap:8px;';
 
+        // Startup Checkbox
+        const startUpLabel = document.createElement('label');
+        startUpLabel.style.cssText = 'display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;';
+        startUpLabel.title = 'Run on StartUp with a delay of 30 seconds';
+
+        const startUpInput = document.createElement('input');
+        startUpInput.type = 'checkbox';
+        startUpInput.checked = !!getSaveVal('HWHAutoBuyExt_startUp', settings.startUp.default);
+        startUpInput.addEventListener('change', (e) => setSaveVal('HWHAutoBuyExt_startUp', e.target.checked));
+
+        const startUpText = document.createElement('span');
+        startUpText.textContent = 'Run on Startup';
+        startUpText.style.fontSize = '14px';
+        startUpLabel.append(startUpInput, startUpText);
+
+        // Dry Run Checkbox
         const dryRunLabel = document.createElement('label');
         dryRunLabel.style.cssText = 'display:flex; align-items:center; gap:8px; cursor:pointer; font-size:14px;';
         dryRunLabel.title = 'Simulate purchases without spending anything';
@@ -488,7 +527,8 @@
         dryRunText.textContent = 'Dry Run Mode';
         dryRunText.style.fontSize = '14px';
         dryRunLabel.append(dryRunInput, dryRunText);
-        leftWrap.append(dryRunLabel);
+
+        leftWrap.append(startUpLabel, dryRunLabel);
 
         // Footer right side: Reset + Run buttons
         const rightWrap = document.createElement('div');
@@ -509,8 +549,9 @@
                     }
                 }
             });
-            // Also update the footer Dry Run checkbox
+            // Also update the footer Dry Run & StartUp checkbox
             dryRunInput.checked = !!settings.dryRun.default;
+            startUpInput.checked = !!settings.startUp.default;
         };
 
         const btnRun = document.createElement('button');
