@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.2.2.0
+// @version         0.2.2.1
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -381,7 +381,7 @@
             return input;
         };
 
-        // Helper: create numeric input (modified to accept target column)
+        // Helper: create numeric input (modified with thousands separators)
         const createNumberInput = (label, placeholder, key, column) => {
             const wrap = document.createElement('label');
             wrap.style.cssText = 'display:flex; flex-direction:column; gap:4px; margin:6px 0; font-size:14px;';
@@ -392,21 +392,43 @@
             cap.style.color = '#ccc';
 
             const input = document.createElement('input');
-            input.type = 'number';
+            input.type = 'text';   // Changed to 'text' instead 'number' to allow dots/commas
             input.placeholder = placeholder;
-            input.style.cssText = 'padding:6px; border-radius:4px; border:1px solid #444; background:#2b2b2b; color:#fff; font-size:14px;';
-            input.onfocus = () => input.style.borderColor = '#666';
-            input.onblur = () => input.style.borderColor = '#444';
+            input.style.cssText = 'padding:6px; border-radius:4px; border:1px solid #444; background:#2b2b2b; color:#fff; font-size:14px; font-family: "Consolas", "Courier New", monospace;';
+
+            // Helper to format string: 1000000 -> 1.000.000
+            const formatValue = (val) => {
+                let num = val.toString().replace(/\D/g, '');        // Remove non-digits
+                return num.replace(/\B(?=(\d{3})+(?!\d))/g, ".");   // Add dots
+            };
 
             wrap.append(cap, input);
             column.appendChild(wrap);
 
+            // Load saved value and format it for the UI
             const savedValue = getSaveVal(`HWHAutoBuyExt_${key}`, settings[key].default);
-            input.value = savedValue;
+            input.value = formatValue(savedValue);
+
             input.addEventListener('input', (e) => {
-                const v = parseInt(e.target.value, 10);
+                // 1. Get current cursor position to prevent jumping
+                let cursor = e.target.selectionStart;
+                let oldLen = e.target.value.length;
+
+                // 2. Format the display
+                let rawValue = e.target.value.replace(/\D/g, '');
+                e.target.value = formatValue(rawValue);
+
+                // 3. Save the clean integer
+                const v = parseInt(rawValue, 10);
                 setSaveVal(`HWHAutoBuyExt_${key}`, Number.isFinite(v) ? v : settings[key].default);
+
+                // 4. Restore cursor position
+                let newLen = e.target.value.length;
+                e.target.setSelectionRange(cursor + (newLen - oldLen), cursor + (newLen - oldLen));
             });
+
+            input.onfocus = () => input.style.borderColor = '#666';
+            input.onblur = () => input.style.borderColor = '#444';
 
             settings[key].input = input;
             return input;
