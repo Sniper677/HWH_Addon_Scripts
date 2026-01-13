@@ -3,7 +3,7 @@
 // @name:en         HWHRepeatCountExt
 // @name:ru         HWHRepeatCountExt
 // @namespace       HWHRepeatCountExt
-// @version         0.1.0.0
+// @version         0.1.1.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -51,6 +51,9 @@
         HWHRCE_BTN_CANCEL: 'Cancel',
         HWHRCE_BTN_REPEAT: 'Repeat',
         HWHRCE_BTN_OK: 'OK',
+        HWHRCE_BTN_SYNC: 'Sync',
+        HWHRCE_BTN_RELOAD: 'Reload Game',
+
     };
     const i18nLangDataRu = {
         HWHRCE: `${GM_info.script.name}`,
@@ -60,7 +63,9 @@
         HWHRCE_REPETITIONS: 'Повторения',
         HWHRCE_BTN_CANCEL: 'Отмена',
         HWHRCE_BTN_REPEAT: 'Повторить',
-        HWHRCE_BTN_OK: 'ХОРОШО',
+        HWHRCE_BTN_OK: 'Ок',
+        HWHRCE_BTN_SYNC: 'Синхронизация',
+        HWHRCE_BTN_RELOAD: 'Перезагрузить игру',
     };
     i18nLangData['en'] = Object.assign(i18nLangData['en'], i18nLangDataEn);
     i18nLangData['ru'] = Object.assign(i18nLangData['ru'], i18nLangDataRu);
@@ -89,12 +94,29 @@
 
                 const finalCount = missionInfo.count;
                 setProgress('');
-                await popup.confirm(
-                    `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
-                    [
-                        { msg: I18N('HWHRCE_BTN_OK'), result: true, color: 'green' }
-                    ]
-                );
+                let result;
+
+                if (finalCount == 1) {
+                    result = await popup.confirm(
+                        `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
+                        [
+
+                            { msg: I18N('HWHRCE_BTN_OK'), result: 0, color: 'green' },
+                        ]
+                    );
+                } else {
+                    result = await popup.confirm(
+                        `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
+                        [
+                            { msg: I18N('HWHRCE_BTN_SYNC'), result: 1, color: 'blue' },
+                            { msg: I18N('HWHRCE_BTN_RELOAD'), result: 2, color: 'red' },
+                        ]
+                    );
+                }
+                if (result !== undefined && result !== null) {
+                    if (result == 1) cheats.refreshGame();
+                    if (result == 2) location.reload();
+                }
 
                 return;
             }
