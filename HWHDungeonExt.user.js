@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.1.0.0
+// @version         0.2.0.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -95,11 +95,24 @@
         let startDungeonActivity = 0;
         let maxDungeonActivity = 150;
         let limitDungeonActivity = 30180;
-        let countShowStats = 1;
+        let countShowTitanStats = 1;
+        let showTitanStatsInterval = 10;
         let dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
         let maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
         //let fastMode = isChecked('fastMode');
         let end = false;
+
+        const colors = {
+            water: 'color: #3498db;',
+            fire: 'color: #e74c3c;',
+            earth: 'color: #2ecc71;',
+            light: 'color: #f1c40f;',
+            dark: 'color: #9b59b6;',
+            neutral: 'color: yellow;',
+            green: 'color: #0b0;',
+            none: 'color: none;',
+            red: 'color: #d00;',
+        };
 
         let countTeam = [];
         let timeDungeon = {
@@ -143,6 +156,10 @@
                 name: 'inventoryGet',
                 args: {},
                 ident: 'inventoryGet',
+            }, {
+                name: 'titanGetAll',
+                args: {},
+                ident: 'titanGetAll',
             }, ],
         };
         this.start = async function (titanite) {
@@ -171,7 +188,9 @@
             dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
             startDungeonActivity = res[3].result.response.stat.todayDungeonActivity;
             countPredictionCard = res[4].result.response.consumable[81];
-            titansStates = dungeonGetInfo.states.titans;
+            titanGetAll = res[5].result.response;
+            // Merge existing states with new data to prevent losing titans on restart
+            titansStates = Object.assign(titansStates || {}, dungeonGetInfo.states.titans);
             teams.hero = {
                 favor: teamGetFavor.dungeon_hero,
                 heroes: teamGetAll.dungeon_hero.filter((id) => id < 6000),
@@ -213,14 +232,14 @@
                 case 'fire':
                     /**
                         Disabled Asherona as she loses HP too quickly and auto run stops again and again.
-                    return [4010, 4011, 4012, 4013, 4014].filter((e) => !titansStates[e]?.isDead);
                     */
+                    //return [4010, 4011, 4012, 4013, 4014].filter((e) => !titansStates[e]?.isDead);
                     return [4010, 4011, 4012, 4013].filter((e) => !titansStates[e]?.isDead);
                 case 'earth':
                     /**
                         Disabled Verdoc as he loses HP too quickly and auto run stops again and again.
-                    return [4020, 4021, 4022, 4023, 4024].filter((e) => !titansStates[e]?.isDead);
                     */
+                    //return [4020, 4021, 4022, 4023, 4024].filter((e) => !titansStates[e]?.isDead);
                     return [4020, 4021, 4022, 4023].filter((e) => !titansStates[e]?.isDead);
             }
         }
@@ -267,10 +286,14 @@
                 endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
                 return;
             }
-            /*if (activity / 1000 > countShowStats) {
-                    countShowStats++;
-                    showStats();
-                }*/
+            /*if (activity / 1000 > countShowTitanStats) {
+                    countShowTitanStats++;
+                    showTitanStats();
+            }*/
+            if (dungeonInfo.floorNumber % showTitanStatsInterval === 0) {
+                showTitanStats();
+            }
+
             bestBattle = {};
             let floorChoices = dungeonInfo.floor.userData;
             if (floorChoices.length > 1) {
@@ -364,6 +387,9 @@
         /** Выбираем стихию для атаки */
         async function chooseElement(attackerType, teamNum) {
             let result;
+            // Get the current team used for this choice
+            const currentTeam = teams[attackerType];
+
             switch (attackerType) {
                 case 'hero':
                 case 'water':
@@ -375,7 +401,18 @@
                     break;
                 case 'neutral':
                     result = await attackNeutral(teamNum, attackerType);
+                    break;
             }
+
+            // Record the team usage for showFinalStats
+            // If it's a specific titan team, record the hero IDs used
+            if (currentTeam && currentTeam.heroes) {
+                addTeam(currentTeam.heroes);
+            } else if (attackerType === 'neutral' && bestBattle.attackers) {
+                // For neutral battles, use the specific attackers chosen by the logic
+                addTeam(Object.keys(bestBattle.attackers).map(Number));
+            }
+
             if (!!result && attackerType != 'hero') {
                 let recovery = (!!!bestBattle.recovery ? 10 * getRecovery(result) : bestBattle.recovery) * 100;
                 let titans = result.progress[0].attackers.heroes;
@@ -778,6 +815,10 @@
                 let dungeonGetInfo = battleResult.dungeon ?? battleResult;
                 dungeonActivity += battleResult.reward.dungeonActivity ?? 0;
                 dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
+                // Update global states with new battle results before checking the floor
+                if (dungeonGetInfo.states && dungeonGetInfo.states.titans) {
+                    Object.assign(titansStates, dungeonGetInfo.states.titans);
+                }
                 checkFloor(dungeonGetInfo);
             } else {
                 //endDungeon('Потеряна связь с сервером игры!', 'break');
@@ -822,9 +863,57 @@
             send(JSON.stringify(saveProgressCall), resultEndBattle);
         }
 
-        /** Display statistics of dungeon completion */
+        /** Display titan statistics */
+        function showTitanStats() {
+            console.log('Titan statistics at floor number: ', dungeonInfo.floorNumber);
+            // Titan display logic mapped from the provided working code example
+            const rows = [
+                { element: 'fire', color: '#e74c3c', icon: '🔥', label: 'FIRE' },
+                { element: 'water', color: '#3498db', icon: '🌊', label: 'WATER' },
+                { element: 'earth', color: '#2ecc71', icon: '🌍', label: 'EARTH' },
+                { element: 'light', color: '#f1c40f', icon: '☀️', label: 'LIGHT' },
+                { element: 'dark', color: '#9b59b6', icon: '🌑', label: 'DARK' },
+            ];
+
+            const titans = titansStates;
+            const colWidth = 18; // Fixed width for each titan column
+            let logMsg = '';
+            let logStyles = [];
+
+            rows.forEach(row => {
+                logMsg += `%c ${row.icon} ${row.label.padEnd(8)} `;
+                logStyles.push(`color: ${row.color}; font-weight: bold; border-bottom: 1px solid ${row.color};`);
+
+                // Filter and format titans
+                Object.keys(titanGetAll).forEach(id => {
+                    const titanData = lib.data.titan[id];
+                    if (titanData && titanData.element === row.element) {
+                        const name = cheats.translate(`LIB_HERO_NAME_${id}`).split(' ')[0];
+                        const hpPerc = titans[id]?.hp ? Math.floor((titans[id]?.hp / titans[id]?.maxHp) * 100) : 100;
+                        const energy = titans[id]?.energy || 0;
+                        let titanStr = '';
+
+                        // Check if dead, otherwise show name + stats
+                        if (titans[id]?.isDead) {
+                            titanStr = `${name}💀`;
+                        } else {
+                            titanStr = `${name}❤️${hpPerc}⚡${energy}`;
+                        }
+
+                        // Add padding to the string to force column alignment
+                        logMsg += `%c${titanStr.padEnd(colWidth)}`;
+                        logStyles.push(`color: ${row.color};`);
+                    }
+                });
+                logMsg += '\n';
+            });
+
+            console.log(logMsg, ...logStyles);
+        }
+
+        /** Display finale statistics of dungeon completion */
         /** Выводит статистику прохождения подземелья */
-        function showStats() {
+        function showFinalStats() {
             let activity = dungeonActivity - startDungeonActivity;
             let workTime = clone(timeDungeon);
             workTime.all = new Date().getTime() - workTime.all;
@@ -834,7 +923,9 @@
             countTeam.sort(function (a, b) {
                 return b.count - a.count;
             });
-            console.log(titansStates);
+
+            showTitanStats();
+
             //console.log('Собрано титанита: ', activity);
             //console.log('Скорость сбора: ' + Math.round((3600 * activity) / workTime.all) + ' титанита/час');
             //console.log('Время раскопок: ');
@@ -860,7 +951,7 @@
             if (!end) {
                 end = true;
                 console.log(reason, info);
-                showStats();
+                showFinalStats();
                 if (info == 'break') {
                     setProgress(`${I18N('HWHDE_STOPPED')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${I18N('HWHDE_SRV_CON_LOST')}`, false, hideProgress);
                 } else {
