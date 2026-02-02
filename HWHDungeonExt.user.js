@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.2.0.1
+// @version         0.2.1.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -121,6 +121,7 @@
             attackNeutral: 0,
             attackEarthOrFire: 0,
         };
+        let dungeonGetInfo = {};
         let titansStates = {};
         let bestBattle = {};
 
@@ -174,7 +175,7 @@
             stopDung = false;
             // stop dungeon
             let res = e.results;
-            let dungeonGetInfo = res[0].result.response;
+            dungeonGetInfo = res[0].result.response;
             if (!dungeonGetInfo) {
                 endDungeon('noDungeon', res);
                 return;
@@ -759,7 +760,7 @@
                     endDungeon('errorBattleResult', battleResult);
                     return;
                 }
-                let dungeonGetInfo = battleResult.dungeon ?? battleResult;
+                dungeonGetInfo = battleResult.dungeon ?? battleResult;
                 dungeonActivity += battleResult.reward.dungeonActivity ?? 0;
                 dungeonActivityPB = `<span style="color: white;">${dungeonActivity}</span>`;
                 // Update global states with new battle results before checking the floor
@@ -809,7 +810,8 @@
 
         /** Display titan statistics */
         function showTitanStats() {
-            console.log('Titan statistics at floor number: ', dungeonInfo.floorNumber);
+            const floorNumber = dungeonGetInfo ? dungeonGetInfo.floorNumber : 'Unknown';
+            console.log('Titan statistics at floor number: ', floorNumber);
             // Titan display logic mapped from the provided working code example
             const rows = [
                 { element: 'fire', color: '#e74c3c', icon: '🔥', label: 'FIRE' },
