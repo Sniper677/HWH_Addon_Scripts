@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.2.0.0
+// @version         0.2.0.1
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -131,7 +131,7 @@
             fire: [],
             hero: [],
         };
-        //тест
+
         let talentMsg = '';
         let talentMsgReward = '';
 
@@ -170,18 +170,16 @@
         };
 
         /** Retrieve dungeon data */
-        /** Получаем данные по подземелью */
         function startDungeon(e) {
             stopDung = false;
-            // стоп подземка
+            // stop dungeon
             let res = e.results;
             let dungeonGetInfo = res[0].result.response;
             if (!dungeonGetInfo) {
                 endDungeon('noDungeon', res);
                 return;
             }
-            //console.log('Начинаем копать на фулл: ', new Date());
-            console.log('Let us start digging for the full version: ', new Date());
+            console.log('Start farming the dungeon: ', new Date());
             let teamGetAll = res[1].result.response;
             let teamGetFavor = res[2].result.response;
             dungeonActivity = res[3].result.response.stat.todayDungeonActivity;
@@ -245,13 +243,11 @@
         }
 
         /** Create object copy */
-        /** Создать копию объекта */
         function clone(a) {
             return JSON.parse(JSON.stringify(a));
         }
 
         /** Find floor element */
-        /** Находит стихию на этаже */
         function findElement(floor, element) {
             for (let i in floor) {
                 if (floor[i].attackerType === element) {
@@ -262,7 +258,6 @@
         }
 
         /** Checking floor */
-        /** Проверяем этаж */
         async function checkFloor(dungeonInfo) {
             if (!('floor' in dungeonInfo) || dungeonInfo.floor?.state == 2) {
                 saveProgress();
@@ -273,16 +268,13 @@
             maxDungeonActivity = getInput('countTitanit');
             maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
             setProgress(`${I18N('HWHDE')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${talentMsg}`, false, stopDungeon);
-            //setProgress('Dungeon: Титанит ' + dungeonActivity + '/' + maxDungeonActivity);
             if (dungeonActivity >= maxDungeonActivity) {
-                //endDungeon('Стоп подземка,', 'набрано титанита: ' + dungeonActivity + '/' + maxDungeonActivity);
                 endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
                 return;
             }
             let activity = dungeonActivity - startDungeonActivity;
             titansStates = dungeonInfo.states.titans;
             if (stopDung) {
-                //endDungeon('Стоп подземка,', 'набрано титанита: ' + dungeonActivity + '/' + maxDungeonActivity);
                 endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
                 return;
             }
@@ -303,7 +295,6 @@
                         if (element == 'earth') {
                             teamNum = await chooseEarthOrFire(floorChoices);
                             if (teamNum < 0) {
-                                //endDungeon('Невозможно победить без потери Титана!', dungeonInfo);
                                 endDungeon('It is impossible to win without losing a titan!', dungeonInfo);
                                 return;
                             }
@@ -316,8 +307,8 @@
                 chooseElement(floorChoices[0].attackerType, 0);
             }
         }
-        //test turtle
-        //тест черепахи
+
+        /** test turtle talent */
         async function checkTalent(dungeonInfo) {
             const talent = dungeonInfo.talent;
             if (!talent) {
@@ -337,7 +328,6 @@
                 const itemId = Object.keys(reward[type]).pop();
                 const count = reward[type][itemId];
                 const itemName = cheats.translate(`LIB_${type.toUpperCase()}_NAME_${itemId}`);
-                //talentMsgReward += `<br>• <span style="font-size: 15px; color: white;">${itemName} (<span style="color: cyan;">x${count}</span>)</span>`;
                 talentMsgReward += `<br>• <span style="color: white;">${itemName} (<span style="color: cyan;">x${count}</span>)</span>`;
                 doorsAmount++;
             }
@@ -345,7 +335,6 @@
         }
 
         /** Choose to attack with fire or earth */
-        /** Выбираем огнем или землей атаковать */
         async function chooseEarthOrFire(floorChoices) {
             bestBattle.recovery = -11;
             let selectedTeamNum = -1;
@@ -355,13 +344,11 @@
                     selectedTeamNum = await attemptAttackEarthOrFire(teamNum, attackerType, attempt);
                 }
             }
-            //console.log('Выбор команды огня или земли: ', selectedTeamNum < 0 ? 'не сделан' : floorChoices[selectedTeamNum].attackerType);
             console.log('Select Fire or Earth Team: ', selectedTeamNum < 0 ? 'not done' : floorChoices[selectedTeamNum].attackerType);
             return selectedTeamNum;
         }
 
         /** Attempt to attack with earth and fire */
-        /** Попытка атаки землей и огнем */
         async function attemptAttackEarthOrFire(teamNum, attackerType, attempt) {
             let start = new Date();
             let team = clone(teams[attackerType]);
@@ -383,11 +370,9 @@
             return bestBattle.selectedTeamNum;
         }
 
-        /** Select element to attack */
-        /** Выбираем стихию для атаки */
+        /** Select element for attack */
         async function chooseElement(attackerType, teamNum) {
             let result;
-            // Get the current team used for this choice
             const currentTeam = teams[attackerType];
 
             switch (attackerType) {
@@ -416,14 +401,12 @@
             if (!!result && attackerType != 'hero') {
                 let recovery = (!!!bestBattle.recovery ? 10 * getRecovery(result) : bestBattle.recovery) * 100;
                 let titans = result.progress[0].attackers.heroes;
-                //console.log('Проведен бой: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', titans);
                 console.log('The battle was fought: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', titans);
             }
             endBattle(result);
         }
 
         /** Attack with earth or fire */
-        /** Атакуем Землей или Огнем */
         async function attackEarthOrFire(teamNum, attackerType) {
             if (!!!bestBattle.recovery) {
                 bestBattle.recovery = -11;
@@ -432,7 +415,6 @@
                     selectedTeamNum = await attemptAttackEarthOrFire(teamNum, attackerType, attempt);
                 }
                 if (selectedTeamNum < 0) {
-                    //endDungeon('Невозможно победить без потери Титана!', attackerType);
                     endDungeon('It is impossible to win without losing a titan!', attackerType);
                     return;
                 }
@@ -441,7 +423,6 @@
         }
 
         /** Find suitable result for the attack */
-        /** Находим подходящий результат для атаки */
         async function findAttack(teamNum, attackerType, team) {
             let start = new Date();
             let recovery = -1000;
@@ -459,7 +440,6 @@
         }
 
         /** Attack with neutral team */
-        /** Атакуем Нейтральной командой */
         async function attackNeutral(teamNum, attackerType) {
             let start = new Date();
             let factors = calcFactor();
@@ -467,7 +447,6 @@
             await findBestBattleNeutral(teamNum, attackerType, factors, true);
             if (bestBattle.recovery < 0 || (bestBattle.recovery < 0.2 && factors[0].value < 0.5)) {
                 let recovery = 100 * bestBattle.recovery;
-                //console.log('Не удалось найти удачный бой в быстром режиме: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', bestBattle.attackers);
                 console.log('Could not find a successful fight in quick mode: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', bestBattle.attackers);
                 await findBestBattleNeutral(teamNum, attackerType, factors, false);
             }
@@ -477,13 +456,11 @@
                 let team = getTeam(bestBattle.attackers);
                 return findAttack(teamNum, attackerType, team);
             }
-            //endDungeon('Не удалось найти удачный бой!', attackerType);
             endDungeon('Failed to find a successful fight!', attackerType);
             return undefined;
         }
 
-        /** See best neutral command */
-        /** Находит лучшую нейтральную команду */
+        /** Find best neutral team */
         async function findBestBattleNeutral(teamNum, attackerType, factors, mode) {
             let countFactors = factors.length < 4 ?
                 factors.length : 4;
@@ -595,8 +572,7 @@
             }
         }
 
-        /** Get neutral command */
-        /** Получаем нейтральную команду */
+        /** Get neutral team */
         function getNeutralTeam(id, swapId, addId) {
             let neutralTeam = clone(teams.water);
             let neutral = neutralTeam.heroes;
@@ -616,7 +592,6 @@
         }
 
         /** Get titan team */
-        /** Получить команду титанов */
         function getTeam(titans) {
             return {
                 favor: {},
@@ -626,7 +601,6 @@
         }
 
         /** Calculate titan combat readiness factor */
-        /** Вычисляем фактор боеготовности титанов */
         function calcFactor() {
             let neutral = teams.neutral;
             let factors = [];
@@ -644,8 +618,7 @@
             return factors;
         }
 
-        /** Returns best result from multiple battles */
-        /** Возвращает наилучший результат из нескольких боев */
+        /** Return best result from multiple battles */
         async function getBestRecovery(teamNum, attackerType, team, countBattle) {
             let bestRecovery = -1000;
             let actions = [];
@@ -662,7 +635,6 @@
         }
 
         /** Returns the difference in the attacking team's health after and before the battle and checks the titans' health for the required minimum */
-        /** Возвращает разницу в здоровье атакующей команды после и до битвы и проверяет здоровье титанов на необходимый минимум */
         function getRecovery(result) {
             if (result.result.stars < 3) {
                 return -100;
@@ -687,8 +659,7 @@
             return afterSumFactor - beforeSumFactor;
         }
 
-        /** Returns state of the titan */
-        /** Возвращает состояние титана */
+        /** Return state of the titan */
         function getFactor(id, energy, percentHP) {
             let elemantId = id.slice(2, 3);
             let isEarthOrFire = elemantId == '1' || elemantId == '2';
@@ -698,7 +669,6 @@
         }
 
         /** Checks state of the titan */
-        /** Проверяет состояние титана */
         function checkTitan(id, energy, percentHP) {
             switch (id) {
                 // Earth: Tank Angus
@@ -716,8 +686,7 @@
             return true;
         }
 
-        /** Starting the fight */
-        /** Начинаем бой */
+        /** Start battle */
         function startBattle(teamNum, attackerType, args) {
             return new Promise(function (resolve, reject) {
                 args.teamNum = teamNum;
@@ -736,25 +705,7 @@
             });
         }
 
-        /** Возращает результат боя в промис */
-        /*function resultBattle(resultBattles, args) {
-                if (!!resultBattles && !!resultBattles.results) {
-                    let battleData = resultBattles.results[0].result.response;
-                    let battleType = "get_tower";
-                    if (battleData.type == "dungeon_titan") {
-                        battleType = "get_titan";
-                    }
-                    battleData.progress = [{ attackers: { input: ["auto", 0, 0, "auto", 0, 0] } }];//тест подземка правки
-                    BattleCalc(battleData, battleType, function (result) {
-                        result.teamNum = args.teamNum;
-                        result.attackerType = args.attackerType;
-                        args.resolve(result);
-
-                    });
-                } else {
-                    endDungeon('Потеряна связь с сервером игры!', 'break');
-                }
-            }*/
+        /** Returns the battle result to a promise */
         function resultBattle(resultBattles, args) {
             battleData = resultBattles.results[0].result.response;
             battleType = 'get_tower';
@@ -769,10 +720,7 @@
             });
         }
 
-        /** End the fight */
-        /** Заканчиваем бой */
-
-        ////
+        /** End the battle */
         async function endBattle(battleInfo) {
             if (!!battleInfo) {
                 const args = {
@@ -780,7 +728,6 @@
                     progress: battleInfo.progress,
                 };
                 if (battleInfo.result.stars < 3) {
-                    //endDungeon('Герой или Титан мог погибнуть в бою!', battleInfo);
                     endDungeon('A hero or titan could die in battle!', battleInfo);
                     return;
                 }
@@ -803,8 +750,8 @@
                 endDungeon('dungeonEndBattle win: false\n', battleInfo);
             }
         }
+
         /** Receive and process the battle results */
-        /** Получаем и обрабатываем результаты боя */
         function resultEndBattle(e) {
             if (!!e && !!e.results) {
                 let battleResult = e.results[0].result.response;
@@ -821,13 +768,11 @@
                 }
                 checkFloor(dungeonGetInfo);
             } else {
-                //endDungeon('Потеряна связь с сервером игры!', 'break');
                 endDungeon('Lost connection with the game server!', 'break');
             }
         }
 
         /** Add titan team to general team list */
-        /** Добавить команду титанов в общий список команд */
         function addTeam(team) {
             for (let i in countTeam) {
                 if (equalsTeam(countTeam[i].team, team)) {
@@ -838,8 +783,7 @@
             countTeam.push({ team: team, count: 1 });
         }
 
-        /** Compare commands for equality */
-        /** Сравнить команды на равенство */
+        /** Compare teams for equality */
         function equalsTeam(team1, team2) {
             if (team1.length == team2.length) {
                 for (let i in team1) {
@@ -876,7 +820,7 @@
             ];
 
             const titans = titansStates;
-            const colWidth = 18; // Fixed width for each titan column
+            const colWidth = 18;
             let logMsg = '';
             let logStyles = [];
 
@@ -911,8 +855,7 @@
             console.log(logMsg, ...logStyles);
         }
 
-        /** Display finale statistics of dungeon completion */
-        /** Выводит статистику прохождения подземелья */
+        /** Display final statistics of dungeon completion */
         function showFinalStats() {
             let activity = dungeonActivity - startDungeonActivity;
             let workTime = clone(timeDungeon);
@@ -926,27 +869,22 @@
 
             showTitanStats();
 
-            //console.log('Собрано титанита: ', activity);
-            //console.log('Скорость сбора: ' + Math.round((3600 * activity) / workTime.all) + ' титанита/час');
-            //console.log('Время раскопок: ');
             console.log('Titanite collected: ', activity);
             console.log('Collection speed: ' + Math.round((3600 * activity) / workTime.all) + ' Titanite/hour');
             console.log('Time for excavations: ');
             for (let i in workTime) {
                 let timeNow = workTime[i];
-                //console.log(i + ': ', Math.round(timeNow / 3600) + ' ч. ' + Math.round((timeNow % 3600) / 60) + ' мин. ' + (timeNow % 60) + ' сек.');
                 console.log(i + ': ', Math.round(timeNow / 3600) + ' h. ' + Math.round((timeNow % 3600) / 60) + ' min. ' + (timeNow % 60) + ' sec.');
             }
-            //console.log('Частота использования команд: ');
-            console.log('Frequency of command usage: ');
+
+            console.log('Frequency of team usage: ');
             for (let i in countTeam) {
                 let teams = countTeam[i];
                 console.log(teams.team + ': ', teams.count);
             }
         }
 
-        /** Finish digging the dungeon */
-        /** Заканчиваем копать подземелье */
+        /** Finish farming the dungeon */
         function endDungeon(reason, info) {
             if (!end) {
                 end = true;
