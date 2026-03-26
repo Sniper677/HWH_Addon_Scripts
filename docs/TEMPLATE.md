@@ -1,7 +1,12 @@
 
 ## Script: [SCRIPT_NAME].user.js
 
-### 💡 Function and Purpose
+## ⚠️ Credits & Disclaimer
+
+Note: Portions of the code here may be derived from or inspired by external community resources and public repositories.
+All credits go to the original authors for their contributions.
+
+### 💡 Function & Purpose
 
 **[Short, precise explanation in one sentence]**
 
@@ -13,7 +18,7 @@ This script enhances the functionality within the **[Name the Game Area, e.g., D
 ### ⚙️ Installation & Configuration
 
 #### Installation
-Direct link to installation: **[https://github.com/Sniper677/HWH_Addon_Scripts](https://github.com/Sniper677/HWH_Addon_Scripts)**
+Direct link to installation: **[[SCRIPT_NAME].user.js](https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/[SCRIPT_NAME].user.js)**
 (Alternatively: Follow the general instructions in the [Main README](#-prerequisites--general-installation).)
 
 #### Configuration (If Applicable)
