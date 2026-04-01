@@ -3,7 +3,7 @@
 // @name:en         HWHRepeatCountExt
 // @name:ru         HWHRepeatCountExt
 // @namespace       HWHRepeatCountExt
-// @version         0.1.1.0
+// @version         0.1.2.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -100,14 +100,16 @@
                     result = await popup.confirm(
                         `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
                         [
-
                             { msg: I18N('HWHRCE_BTN_OK'), result: 0, color: 'green' },
+                            { msg: I18N('HWHRCE_BTN_SYNC'), result: 1, color: 'blue' },
+                            { msg: I18N('HWHRCE_BTN_RELOAD'), result: 2, color: 'red' },
                         ]
                     );
                 } else {
                     result = await popup.confirm(
                         `${I18N('HWHRCE_COMPLETED')}<br><br>${I18N('HWHRCE_REPETITIONS')}: ${finalCount}`,
                         [
+                            { msg: I18N('HWHRCE_BTN_OK'), result: 0, color: 'green' },
                             { msg: I18N('HWHRCE_BTN_SYNC'), result: 1, color: 'blue' },
                             { msg: I18N('HWHRCE_BTN_RELOAD'), result: 2, color: 'red' },
                         ]
