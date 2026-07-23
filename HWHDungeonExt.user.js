@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.2.1.0
+// @version         0.2.2.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -25,7 +25,7 @@
         return;
     }
 
-    console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: red');
+    console.log('%cStart Extension ' + GM_info.script.name + ', v' + GM_info.script.version + ' by ' + GM_info.script.author, 'color: green');
 
     const { addExtentionName } = HWHFuncs;
 
@@ -109,9 +109,11 @@
             light: 'color: #f1c40f;',
             dark: 'color: #9b59b6;',
             neutral: 'color: yellow;',
+            yellow: 'color: #ffff;',
             green: 'color: #0b0;',
-            none: 'color: none;',
             red: 'color: #d00;',
+            none: 'color: none;',
+            inherit: 'color: inherit;',
         };
 
         let countTeam = [];
@@ -177,10 +179,10 @@
             let res = e.results;
             dungeonGetInfo = res[0].result.response;
             if (!dungeonGetInfo) {
-                endDungeon('noDungeon', res);
+                endDungeon('%cnoDungeon%c', res, colors.green, colors.none);
                 return;
             }
-            console.log('Start farming the dungeon: ', new Date());
+            console.log('%cStart farming the dungeon: %c', 'color: #0b0;', 'color: none;', new Date());
             let teamGetAll = res[1].result.response;
             let teamGetFavor = res[2].result.response;
             dungeonActivity = res[3].result.response.stat.todayDungeonActivity;
@@ -227,16 +229,20 @@
                      */
                     return [4023, 4022, 4012, 4021, 4011, 4010, 4020];
                 case 'water':
+                    /**
+                        Disabled Tidus as they loses HP too quickly and auto run stops again and again.
+                    */
+                    //return [4000, 4001, 4002, 4003, 4004].filter((e) => !titansStates[e]?.isDead);
                     return [4000, 4001, 4002, 4003].filter((e) => !titansStates[e]?.isDead);
                 case 'fire':
                     /**
-                        Disabled Asherona as she loses HP too quickly and auto run stops again and again.
+                        Disabled Asherona as they loses HP too quickly and auto run stops again and again.
                     */
                     //return [4010, 4011, 4012, 4013, 4014].filter((e) => !titansStates[e]?.isDead);
                     return [4010, 4011, 4012, 4013].filter((e) => !titansStates[e]?.isDead);
                 case 'earth':
                     /**
-                        Disabled Verdoc as he loses HP too quickly and auto run stops again and again.
+                        Disabled Verdoc as they loses HP too quickly and auto run stops again and again.
                     */
                     //return [4020, 4021, 4022, 4023, 4024].filter((e) => !titansStates[e]?.isDead);
                     return [4020, 4021, 4022, 4023].filter((e) => !titansStates[e]?.isDead);
@@ -270,13 +276,15 @@
             maxDungeonActivityPB = `<span style="color: orange;">${maxDungeonActivity}</span>`;
             setProgress(`${I18N('HWHDE')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${talentMsg}`, false, stopDungeon);
             if (dungeonActivity >= maxDungeonActivity) {
-                endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
+                const info = dungeonActivity + '/' + maxDungeonActivity;
+                endDungeon('%cStop dungeon, threshold reached. Titanite gained: %c', info, colors.green, colors.none);
                 return;
             }
             let activity = dungeonActivity - startDungeonActivity;
             titansStates = dungeonInfo.states.titans;
             if (stopDung) {
-                endDungeon('Stop dungeon,', 'Titanite gained: ' + dungeonActivity + '/' + maxDungeonActivity);
+                const info = dungeonActivity + '/' + maxDungeonActivity;
+                endDungeon('%cStop dungeon manually, Titanite gained: %c', info, colors.green, colors.none);
                 return;
             }
             /*if (activity / 1000 > countShowTitanStats) {
@@ -296,7 +304,7 @@
                         if (element == 'earth') {
                             teamNum = await chooseEarthOrFire(floorChoices);
                             if (teamNum < 0) {
-                                endDungeon('It is impossible to win without losing a titan!', dungeonInfo);
+                                endDungeon('%c⚠️ It is impossible to win without losing a titan!%c', dungeonInfo, colors.green, colors.red);
                                 return;
                             }
                         }
@@ -329,7 +337,15 @@
                 const itemId = Object.keys(reward[type]).pop();
                 const count = reward[type][itemId];
                 const itemName = cheats.translate(`LIB_${type.toUpperCase()}_NAME_${itemId}`);
-                talentMsgReward += `<br>• <span style="color: white;">${itemName} (<span style="color: cyan;">x${count}</span>)</span>`;
+                const itemColor =
+                    itemId == 300 ? "red" :
+                    itemId == 55  ? "gold" :
+                    itemId == 13  ? "violet" :
+                    itemId >= 66 && itemId <= 69 ? "blue" :
+                    itemId >= 47 && itemId <= 50 ? "green" :
+                    "white";
+                console.log('TMNT Talent => Id: ' + itemId + ', Name: ' + itemName);
+                talentMsgReward += `<br>• <span style="color: ${itemColor};">${itemName}</span><span style="color: white;"> (<span style="color: cyan;">x${count}</span>)</span>`;
                 doorsAmount++;
             }
             talentMsg = `<br>TMNT Talent: ${doorsAmount}/3 ${talentMsgReward}<br>`;
@@ -345,7 +361,14 @@
                     selectedTeamNum = await attemptAttackEarthOrFire(teamNum, attackerType, attempt);
                 }
             }
-            console.log('Select Fire or Earth Team: ', selectedTeamNum < 0 ? 'not done' : floorChoices[selectedTeamNum].attackerType);
+            // Access the type from the object using the result index
+            const finalType = selectedTeamNum < 0 ? 'not done' : floorChoices[selectedTeamNum].attackerType;
+
+            console.log(
+                '%cSelect Fire or Earth Team: %c' + finalType,
+                colors.green,
+                selectedTeamNum < 0 ? colors.none : (colors[finalType] || colors.none)
+            );
             return selectedTeamNum;
         }
 
@@ -402,7 +425,16 @@
             if (!!result && attackerType != 'hero') {
                 let recovery = (!!!bestBattle.recovery ? 10 * getRecovery(result) : bestBattle.recovery) * 100;
                 let titans = result.progress[0].attackers.heroes;
-                console.log('The battle was fought: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', titans);
+                console.log(
+                    '%cThe battle was fought: %c' + attackerType + '%c, recovery = %c' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '%%',
+                    colors.green,
+                    colors[attackerType],
+                    colors.green,
+                    colors.none,
+                    '\r\n',
+                    Object.keys(titans),
+                    Object.keys(titans).map((id) => cheats.translate('LIB_HERO_NAME_' + id))
+                );
             }
             endBattle(result);
         }
@@ -416,7 +448,7 @@
                     selectedTeamNum = await attemptAttackEarthOrFire(teamNum, attackerType, attempt);
                 }
                 if (selectedTeamNum < 0) {
-                    endDungeon('It is impossible to win without losing a titan!', attackerType);
+                    endDungeon('%c⚠️ It is impossible to win without losing a titan!%c', attackerType, colors.green, colors[attackerType]);
                     return;
                 }
             }
@@ -448,7 +480,15 @@
             await findBestBattleNeutral(teamNum, attackerType, factors, true);
             if (bestBattle.recovery < 0 || (bestBattle.recovery < 0.2 && factors[0].value < 0.5)) {
                 let recovery = 100 * bestBattle.recovery;
-                console.log('Could not find a successful fight in quick mode: ' + attackerType + ', recovery = ' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '% \r\n', bestBattle.attackers);
+                console.log(
+                    '%c❌ Could not find a successful fight in quick mode: %c' + attackerType + '%c, recovery = %c' + (recovery > 0 ? '+' : '') + Math.round(recovery) + '%%',
+                    colors.green,
+                    colors[attackerType],
+                    colors.green,
+                    colors.none,
+                    '\r\n',
+                    Object.keys(bestBattle.attackers)
+                );
                 await findBestBattleNeutral(teamNum, attackerType, factors, false);
             }
             let workTime = new Date().getTime() - start.getTime();
@@ -457,7 +497,7 @@
                 let team = getTeam(bestBattle.attackers);
                 return findAttack(teamNum, attackerType, team);
             }
-            endDungeon('Failed to find a successful fight!', attackerType);
+            endDungeon('%c❌ Failed to find a successful fight!%c', attackerType, colors.green, colors[attackerType]);
             return undefined;
         }
 
@@ -729,7 +769,7 @@
                     progress: battleInfo.progress,
                 };
                 if (battleInfo.result.stars < 3) {
-                    endDungeon('A hero or titan could die in battle!', battleInfo);
+                    endDungeon('%c⚠️ A hero or titan could die in battle!\r\n%c', battleInfo, colors.green, colors.none);
                     return;
                 }
                 if (countPredictionCard > 0) {
@@ -737,7 +777,7 @@
                     countPredictionCard--;
                 } else {
                     const timer = getTimer(battleInfo.battleTime);
-                    console.log("Timer set: " + timer + " sec");
+                    console.log('%cTimer set: %c' + timer + '%c sec', colors.green, colors.yellow, colors.green);
                     await countdownTimer(timer, `${I18N('HWHDE')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${talentMsg}`, stopDungeon);
                 }
                 const calls = [{
@@ -748,7 +788,7 @@
                 lastDungeonBattleData = null;
                 send(JSON.stringify({ calls }), resultEndBattle);
             } else {
-                endDungeon('dungeonEndBattle win: false\n', battleInfo);
+                endDungeon('%cdungeonEndBattle win: %cfalse\r\n%c', battleInfo, colors.green, colors.red, colors.none);
             }
         }
 
@@ -769,7 +809,7 @@
                 }
                 checkFloor(dungeonGetInfo);
             } else {
-                endDungeon('Lost connection with the game server!', 'break');
+                endDungeon('%cLost connection with the game server!%c', 'break', colors.green, colors.red);
             }
         }
 
@@ -811,7 +851,7 @@
         /** Display titan statistics */
         function showTitanStats() {
             const floorNumber = dungeonGetInfo ? dungeonGetInfo.floorNumber : 'Unknown';
-            console.log('Titan statistics at floor number: ', floorNumber);
+            console.log('%cTitan statistics at floor number: %c' + floorNumber, colors.green, colors.none);
             // Titan display logic mapped from the provided working code example
             const rows = [
                 { element: 'fire', color: '#e74c3c', icon: '🔥', label: 'FIRE' },
@@ -871,15 +911,29 @@
 
             showTitanStats();
 
-            console.log('Titanite collected: ', activity);
-            console.log('Collection speed: ' + Math.round((3600 * activity) / workTime.all) + ' Titanite/hour');
-            console.log('Time for excavations: ');
-            for (let i in workTime) {
-                let timeNow = workTime[i];
-                console.log(i + ': ', Math.round(timeNow / 3600) + ' h. ' + Math.round((timeNow % 3600) / 60) + ' min. ' + (timeNow % 60) + ' sec.');
+            console.log('%cTitanite collected: %c', colors.green, colors.none, activity);
+            console.log(
+                '%cCollection speed: %c' + Math.round((3600 * activity) / workTime.all) + ' %cTitanite/hour',
+                colors.green,
+                colors.none,
+                colors.green
+            );
+            console.log('%cTime for excavations:', colors.green);
+            for (let item in workTime) {
+                let timeNow = workTime[item];
+                console.log(
+                    '%c' + item + ': %c' + Math.round(timeNow / 3600) + '%c h. %c' + Math.round((timeNow % 3600) / 60) + '%c min. %c' + (timeNow % 60) + '%c sec.',
+                    colors.green,
+                    colors.none,
+                    colors.green,
+                    colors.none,
+                    colors.green,
+                    colors.none,
+                    colors.green
+                );
             }
 
-            console.log('Frequency of team usage: ');
+            console.log('%cFrequency of team usage:', colors.green);
             for (let i in countTeam) {
                 let teams = countTeam[i];
                 console.log(teams.team + ': ', teams.count);
@@ -887,10 +941,16 @@
         }
 
         /** Finish farming the dungeon */
-        function endDungeon(reason, info) {
+        function endDungeon(reason, info, ...styles) {
             if (!end) {
                 end = true;
-                console.log(reason, info);
+
+                if (styles.length > 0) {
+                    console.log(reason, ...styles, info);
+                } else {
+                    console.log(reason, info);
+                }
+
                 showFinalStats();
                 if (info == 'break') {
                     setProgress(`${I18N('HWHDE_STOPPED')}: ${I18N('HWHDE_TITANITE')} ${dungeonActivityPB}/${maxDungeonActivityPB} ${I18N('HWHDE_SRV_CON_LOST')}`, false, hideProgress);
