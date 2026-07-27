@@ -3,7 +3,7 @@
 // @name:en         HWHAdvPathExt
 // @name:ru         HWHAdvPathExt
 // @namespace       HWHAdvPathExt
-// @version         0.0.20.1
+// @version         0.0.20.2
 // @description     Extension for HeroWarsHelper script - Modifies the adventure button to use predefined paths directly within the script, allowing modification before starting.
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -70,242 +70,242 @@
             //Galahad, adv #1 -> DONE
             "adv_strongford_2pl_easy": {
                 /* Solfors paths */
-                blue:   { path: '01,02,03,05,06(2xB)', label: '1 Solfors Blue' },
-                orange: { path: '01,02,04,07,06(2xB)', label: '2 Solfors Orange' },
-                green:  { path: '', label: '3 Solfors Green' },
+                blue:   { path: '01,02,03,05,06(2xB)', label: 'Sol_A' },
+                orange: { path: '01,02,04,07,06(2xB)', label: 'Sol_B' },
+                green:  { path: '', label: '3 Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Ginger, adv #2 -> DONE
             "adv_valley_3pl_easy": {
                 /* Solfors paths */
-                blue:   { path: '01,02,05,08,09,11(B)', label: '2 Solfors Blue' },
-                orange: { path: '01,03,06,09,11(2xB)',  label: '1 Solfors Orange' },
-                green:  { path: '01,04,07,10,09,11(B)', label: '3 Solfors Green' },
+                blue:   { path: '01,02,05,08,09,11(B)', label: 'Sol_A' },
+                orange: { path: '01,03,06,09,11(2xB)',  label: 'Sol_B' },
+                green:  { path: '01,04,07,10,09,11(B)', label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '01,02,05,08,09,06',    label: 'NoWait 1' },
-                black:  { path: '01,04,07,10,09,11(B)', label: 'NoWait 2' },
-                brown:  { path: '01,03,06,09,11(2xB)',  label: 'NoWait 3' }
+                white:  { path: '01,02,05,08,09,06',    label: 'NoWait_1' },
+                black:  { path: '01,04,07,10,09,11(B)', label: 'NoWait_2' },
+                brown:  { path: '01,03,06,09,11(2xB)',  label: 'NoWait_3' }
             },
             //Orion, adv #3 -> DONE
             "adv_ghirwil_3pl_easy": {
                 /* Solfors paths */
-                blue:   { path: '01,04,12,13,08',       label: '1 Solfors Blue' },
-                orange: { path: '01,05,06,09,11(2xB)',  label: '2 Solfors Orange' },
-                green:  { path: '01,02,03,07,10,11(B)', label: '3 Solfors Green' },
+                blue:   { path: '01,04,12,13,08',       label: 'Sol_A' },
+                orange: { path: '01,05,06,09,11(2xB)',  label: 'Sol_B' },
+                green:  { path: '01,02,03,07,10,11(B)', label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '01,04,12,13,08',       label: 'NoWait 1' },
-                black:  { path: '01,05,06,07,10,11(B)', label: 'NoWait 2' },
-                brown:  { path: '01,03,07,06,09',       label: 'NoWait 3' }
+                white:  { path: '01,04,12,13,08',       label: 'NoWait_1' },
+                black:  { path: '01,05,06,07,10,11(B)', label: 'NoWait_2' },
+                brown:  { path: '01,02,03,07,06,09',    label: 'NoWait_3' }
             },
             //Cleaver, adv #4 -> DONE
             "adv_angels_3pl_easy_fire": {
                 /* Solfors paths */
-                blue:   { path: '01,02,04,07,18,08,12,19,22,23(B)', label: '2 Solfors Blue' },
-                orange: { path: '01,05,24,25,09,14,15,20,22,23(B)', label: '1 Solfors Orange' },
-                green:  { path: '01,03,06,11,17,10,16,21,22,23(B)', label: '3 Solfors Green' },
+                blue:   { path: '01,02,04,07,18,08,12,19,22,23(2xB)', label: 'Sol_A' },
+                orange: { path: '01,05,24,25,09,14,15,20,22,23(2xB)', label: 'Sol_B' },
+                green:  { path: '01,03,06,11,17,10,16,21,22,23(2xB)', label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Galahad, adv #5 -> DONE
             "adv_strongford_3pl_normal_2": {
                 /* Solfors paths */
-                blue:   { path: '01,05,09,10,14,17,20,27,25,21,24(B)', label: '3/2 Solfors Blue' },
-                orange: { path: '01,04,06,10,11,15,22,15,19,18',       label: '2 Solfors Orange' },
-                green:  { path: '01,02,07,08,12,16,23,26,25,21',       label: '1 Solfors Green' },
+                blue:   { path: '01,05,09,10,14,17,20,27,25,21,24(B)', label: 'Sol_A' },
+                orange: { path: '01,04,06,10,11,15,19,18,24(3xB)',     label: 'Sol_B' },
+                green:  { path: '01,02,07,08,12,16,23,26,25,22',       label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Ginger, adv #6 -> DONE
             "adv_valley_3pl_normal": {
                 /* Solfors paths */
-                blue:   { path: '01,02,04,07,10,13,16,19,24,22,25(B)', label: '1/3 Solfors Blue' },
-                orange: { path: '01,05,07,08,11,14,17,20,23,25(B)',    label: '3 Solfors Orange' },
-                green:  { path: '01,03,06,09,12,15,18,21,26,25(B)',    label: '2/3 Solfors Green' },
+                blue:   { path: '01,02,04,07,10,13,16,19,24,22,25(B)', label: 'Sol_A' },
+                orange: { path: '01,05,07,08,11,14,17,20,23,25(B)',    label: 'Sol_B' },
+                green:  { path: '01,03,06,09,12,15,18,21,26,25(B)',    label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,04,07,10,13,16,19,24,22,25(B)', label: '1 Goodwin A' },
-                purple: { path: '01,03,06,09,12,15,18,21,26,23,25(B)', label: '2 Goodwin B' },
-                red:    { path: '01,05,07,08,11,14,17,20,22,25(B)',    label: '3 Goodwin C' },
+                yellow: { path: '01,02,04,07,10,13,16,19,24,22,25(B)', label: 'Gdwn_A' },
+                purple: { path: '01,03,06,09,12,15,18,21,26,23,25(B)', label: 'Gdwn_B' },
+                red:    { path: '01,05,07,08,11,14,17,20,22,25(B)',    label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
-            //Orion, adv #7
+            //Orion, adv #7 -> DONE
             "adv_ghirwil_3pl_normal_2": {
                 /* Solfors paths */
-                blue:   { path: '01,08,01,11,12,15,12,11,21,25,27(B)', label: '1/2 Solfors Blue' },
-                orange: { path: '01,11,10,14,17,13,19,20,24,27(B)',    label: '2/3 Solfors Orange' },
-                green:  { path: '01,07,03,04,05,09,16,23,22,26,27(B)', label: '3/1 Solfors Green' },
+                blue:   { path: '01,08,01,11,12,15,12,11,21,25,27(B)', label: 'Sol_A' },
+                orange: { path: '01,11,10,14,17,13,19,20,24,27(2xB)',  label: 'Sol_B' },
+                green:  { path: '01,07,03,04,05,09,16,23,22,26,27(B)', label: 'Sol_C' },
                 /* Goodwin paths */
-                yellow: { path: '01,11,10,11,12,15,12,11,21,25,27(B)', label: 'Goodwin A' },
-                purple: { path: '01,07,03,04,03,06,13,19,20,24,27(B)', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '01,11,10,11,12,15,12,11,21,25,27(B)', label: 'Gdwn_A' },
+                purple: { path: '01,07,03,04,03,06,13,19,20,24,27(B)', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '01,07,01,11,10,14,17,13,19,20,24,27(B)', label: 'NoWait 1' },
-                black:  { path: '01,08,01,11,21,25,27(B),26,22,23,16)',   label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '01,07,01,11,10,14,17,13,19,20,24',    label: 'NoWait_1' },
+                black:  { path: '01,08,01,11,21,25,27(B),26,22,23,16', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
-            //Cleaver, adv #8
+            //Cleaver, adv #8 -> DONE
             "adv_angels_3pl_normal": {
                 /* Solfors paths */
-                blue:   { path: '01,03,02,06,07,09,10,13,17,16,20,22,21,28,32(B)', label: 'Solfors Blue' },
-                orange: { path: '01,03,05,07,09,11,14,18,20,22,24,27,30,26,29,25', label: 'Solfors Orange' },
-                green:  { path: '01,03,04,08,07,09,11,15,19,20,22,23,31,32(B)',    label: 'Solfors Green' },
+                blue:   { path: '01,03,02,06,07,09,10,13,17,16,20,22,21,28,32(2xB)', label: 'Sol_2' },
+                orange: { path: '01,03,05,07,09,11,14,18,20,22,24,27,30,26,29,25',   label: 'Sol_1' },
+                green:  { path: '01,03,04,08,07,09,11,15,19,20,22,23,31,32(3xB)',    label: 'Sol_3' },
                 /* Goodwin paths */
-                yellow: { path: '01,03,04,08,07,09,10,13,17,16,20,22,23,31,32(B)', label: 'Goodwin A' },
-                purple: { path: '01,03,05,07,08,11,14,18,20,22,24,27,30,26,32(B)', label: 'Goodwin B' },
-                red:    { path: '01,03,02,06,07,09,11,15,19,20,22,21,28,29,25',    label: 'Goodwin C' },
+                yellow: { path: '01,03,04,08,07,09,10,13,17,16,20,22,23,31,32(2xB)', label: 'Gdwn_A' },
+                purple: { path: '01,03,05,07,08,11,14,18,20,22,24,27,30,26,32(2xB)', label: 'Gdwn_B' },
+                red:    { path: '01,03,02,06,07,09,11,15,19,20,22,21,28,29,25',      label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
-            //Galahad, adv #9
+            //Galahad, adv #9 -> DONE
             "adv_strongford_3pl_hard_2": {
-                /* Solfors paths */
-                blue:   { path: '01,02,06,10,15,20,14,24,29,25,36,39,42,44,45',    label: '2/3 Solfors Blue' },
-                orange: { path: '01,03,08,12,11,07,16,21,26,30,31,32,35,37,40,45', label: '1 Solfors Orange' },
-                green:  { path: '01,03,04,13,19,18,23,17,22,38,41,43,46,45',       label: '3/2Solfors Green' },
+                /* Sol_paths */
+                blue:   { path: '01,02,06,10,15,20,14,24,29,25,36,39,42,44,45(2xB)',  label: 'Sol_2-3' },
+                orange: { path: '01,03,08,12,11,07,16,21,26,30,31,32,35,37,40,45(B)', label: 'Sol_1-x' },
+                green:  { path: '01,03,04,13,19,18,23,17,22,38,41,43,46,45(2xB)',     label: 'Sol_3-2' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,06,10,15,07,16,17,23,22,27,32,35,37,40,45', label: 'Goodwin A' },
-                purple: { path: '01,03,08,12,11,18,19,28,34,33,38,41,43,46,45',    label: 'Goodwin B' },
-                red:    { path: '01,02,05,09,14,20,26,21,30,36,39,42,44,45',       label: 'Goodwin C' },
+                yellow: { path: '01,02,06,10,15,07,16,17,23,22,27,32,35,37,40,45(B)', label: 'Gdwn_A' },
+                purple: { path: '01,03,08,12,11,18,19,28,34,33,38,41,43,46,45(2xB)',  label: 'Gdwn_B' },
+                red:    { path: '01,02,05,09,14,20,26,21,30,36,39,42,44,45(3xB)',     label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Ginger, adv #10 -> DONE
             "adv_valley_3pl_hard": {
                 /* Solfors paths */
-                blue:   { path: '01,03,02,06,11,17,25,30,35,34,29,24,21,17,12,07',    label: '3 Solfors Blue' },
-                orange: { path: '01,04,08,13,18,22,26,31,36,40,45,44,43,38,33,28',    label: '1 Solfors Orange' },
-                green:  { path: '01,05,09,14,19,23,27,32,37,42,48,51,50,49,46,52(B)', label: '2 Solfors Green' },
+                blue:   { path: '01,03,02,06,11,17,25,30,35,34,29,24,21,17,12,07',    label: 'Sol_3' },
+                orange: { path: '01,04,08,13,18,22,26,31,36,40,45,44,43,38,33,28',    label: 'Sol_1' },
+                green:  { path: '01,05,09,14,19,23,27,32,37,42,48,51,50,49,46,52(B)', label: 'Sol_2' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Orion, adv #11 -> DONE
             "adv_ghirwil_3pl_hard": {
                 /* Solfors paths */
-                blue:   { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37(B)', label: '2/3 Solfors Blue' },
-                orange: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19', label: '1 Solfors Orange' },
-                green:  { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37(B)', label: '3/1 Solfors Green' },
+                blue:   { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37(B)', label: 'Sol_2-3' },
+                orange: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19', label: 'Sol_1-x' },
+                green:  { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37(B)', label: 'Sol_3-1' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Cleaver, adv #12
             "adv_angels_3pl_hard": {
                 /* Solfors paths */
-                blue:   { path: '01,09,03,06,10,22,31,36,35,29,34,29,30,21,13', label: '2 Solfors Blue' },
-                orange: { path: '01,05,12,15,28,20,12,14,26,18,19,20,27(B)',    label: '3 Solfors Orange' },
-                green:  { path: '01,08,02,04,07,16,23,32,33,25,24,17,11',       label: '1 Solfors Green' },
+                blue:   { path: '01,09,03,06,10,22,31,36,35,29,34,29,30,21,13', label: 'Sol_2-3' },
+                orange: { path: '01,05,12,15,28,20,12,14,26,18,19,20,27(B)',    label: 'Sol_3-1+2' },
+                green:  { path: '01,08,02,04,07,16,23,32,33,25,24,17,11',       label: 'Sol_1-3' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,08,11,07,04,07,16,23,32,33,25,34,29,35,36',    label: '1 Goodwin A' },
-                purple: { path: '01,03,09,13,10,06,10,22,31,30,21,30,15,28,20,27(B)', label: '2/3 Goodwin B' },
-                red:    { path: '01,05,12,14,24,17,24,25,26,18,19,20,27',             label: '2 Goodwin C' },
+                yellow: { path: '01,02,08,11,07,04,07,16,23,32,33,25,34,29,35,36',    label: 'Gdwn_1-x' },
+                purple: { path: '01,03,09,13,10,06,10,22,31,30,21,30,15,28,20,27(B)', label: 'Gdwn_2-3' },
+                red:    { path: '01,05,12,14,24,17,24,25,26,18,19,20,27',             label: 'Gdwn_2-x' },
                 /* NoWait paths */
-                white:  { path: '01,08,02,04,07,16,23,32,23,24,14,26,25,24,17,11', label: '1 NoWait 1' },
-                black:  { path: '01,09,01,05,12,15,28,29,34,25,26,18,19,20,27(B)', label: '2 NoWait 2' },
-                brown:  { path: '01,03,06,10,22,31,36,31,30,21,13',                label: '3 NoWait 3 -easy' }
+                white:  { path: '01,08,02,04,07,16,23,32,23,24,14,26,25,24,17,11', label: '1 NoWait_1' },
+                black:  { path: '01,09,01,05,12,15,28,29,34,25,26,18,19,20,27(B)', label: '2 NoWait_2' },
+                brown:  { path: '01,03,06,10,22,31,36,31,30,21,13',                label: '3 NoWait_3' }
             },
             //Galahad, adv #13 - map #9 (probably hard or higher) -> DONE
             "adv_strongford_3pl_hell": {
                 /* Solfors paths */
-                blue:   { path: '01,02,06,12,15,20,14,24,29,25,35,38,41,43,44(B)', label: '2/1 Solfors Blue' },
-                orange: { path: '01,03,08,09,13,07,16,21,26,30,31,42,34,36,39',    label: '1/2 Solfors Orange' },
-                green:  { path: '01,03,04,10,19,18,23,17,22,37,40,32,45,44(B)',    label: '3/1 Solfors Green' },
+                blue:   { path: '01,02,06,12,15,20,14,24,29,25,35,38,41,43,44(B)', label: 'Sol_2-1' },
+                orange: { path: '01,03,08,09,13,07,16,21,26,30,31,42,34,36,39',    label: 'Sol_1-2' },
+                green:  { path: '01,03,04,10,19,18,23,17,22,37,40,32,45,44(B)',    label: 'Sol_3-1' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,05,11,14,20,26,21,30,35,38,41,43,44(B)',    label: '2/1 Goodwin A' },
-                purple: { path: '01,02,06,12,15,07,16,17,23,22,27,42,34,36,39',    label: '1 Goodwin B' },
-                red:    { path: '01,03,08,09,13,18,19,28,00,33,37,40,32,45,44(B)', label: '3/1 Goodwin C' },
+                yellow: { path: '01,02,05,11,14,20,26,21,30,35,38,41,43,44(B)',    label: 'Gdwn_2-1' },
+                purple: { path: '01,02,06,12,15,07,16,17,23,22,27,42,34,36,39',    label: 'Gdwn_1-x' },
+                red:    { path: '01,03,08,09,13,18,19,28,00,33,37,40,32,45,44(B)', label: 'Gdwn_3-1' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Ginger, adv #13 - map #10 (probably hard or highere) -> DONE
             "adv_valley_3pl_hell": {
                 /* Solfors paths */
-                blue:   { path: '01,03,02,06,11,17,25,30,35,34,29,24,21,17,12,07',    label: '3 Solfors Blue' },
-                orange: { path: '01,04,08,13,18,22,26,31,36,40,45,44,43,38,33,28',    label: '1 Solfors Orange' },
-                green:  { path: '01,05,09,14,19,23,27,32,37,42,48,51,50,49,46,52(B)', label: '2 Solfors Green' },
+                blue:   { path: '01,03,02,06,11,17,25,30,35,34,29,24,21,17,12,07',    label: 'Sol_1-x' },
+                orange: { path: '01,04,08,13,18,22,26,31,36,40,45,44,43,38,33,28',    label: 'Sol_2-1' },
+                green:  { path: '01,05,09,14,19,23,27,32,37,42,48,51,50,49,46,52(B)', label: 'Sol_3-x' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Goodwin A' },
-                purple: { path: '', label: 'Goodwin B' },
-                red:    { path: '', label: 'Goodwin C' },
+                yellow: { path: '', label: 'Gdwn_A' },
+                purple: { path: '', label: 'Gdwn_B' },
+                red:    { path: '', label: 'Gdwn_C' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Orion, adv #13 -  map #11 (probably hard or higher) -> DONE
             "adv_ghirwil_3pl_hell": {
                 /* Solfors paths */
-                blue:   { path: '01,02,03,06,07,12,11,15,21,27,36,39,40,41',       label: '2/3 Solfors Blue' },
-                orange: { path: '01,02,04,06,08,12,17,18,19,25,31,30,29,28,22,16', label: '1 Solfors Orange' },
-                green:  { path: '01,02,05,06,09,13,14,20,26,32,38,35,33,34',       label: '3/2 Solfors Green' },
+                blue:   { path: '01,02,03,06,07,12,11,15,21,27,36,39,40,41',       label: 'Sol_2-3' },
+                orange: { path: '01,02,04,06,08,12,17,18,19,25,31,30,29,28,22,16', label: 'Sol_1-x' },
+                green:  { path: '01,02,05,06,09,13,14,20,26,32,38,35,33,34',       label: 'Sol_3-2' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37',    label: '2/3 Goodwin A' },
-                purple: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19', label: '1 Goodwin B' },
-                red:    { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37',    label: '3/2 Goodwin C' },
+                yellow: { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37',    label: 'Gdwn_2-3' },
+                purple: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19', label: 'Gdwn_1-x' },
+                red:    { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37',    label: 'Gdwn_3-2' },
                 /* NoWait paths */
-                white:  { path: '', label: 'NoWait 1' },
-                black:  { path: '', label: 'NoWait 2' },
-                brown:  { path: '', label: 'NoWait 3' }
+                white:  { path: '', label: 'NoWait_1' },
+                black:  { path: '', label: 'NoWait_2' },
+                brown:  { path: '', label: 'NoWait_3' }
             },
             //Cleaver, adv #13 - map #12 (probably hard or higher)
             "adv_angels_3pl_hell": {
                 /* Solfors paths */
-                blue:   { path: '01,09,03,05,10,22,31,36,35,29,32,29,30,21,13', label: '2 Solfors Blue' },
-                orange: { path: '01,08,12,15,28,20,12,14,26,18,19,20,27(B)',    label: '3 Solfors Orange' },
-                green:  { path: '01,07,02,04,06,16,23,33,34,25,24,17,11',       label: '1 Solfors Green' },
+                blue:   { path: '01,09,03,05,10,22,31,36,35,29,32,29,30,21,13', label: 'Sol_2' },
+                orange: { path: '01,08,12,15,28,20,12,14,26,18,19,20,27(B)',    label: 'Sol_3' },
+                green:  { path: '01,07,02,04,06,16,23,33,34,25,24,17,11',       label: 'Sol_1' },
                 /* Goodwin paths */
-                yellow: { path: '01,02,04,06,16,23,33,34,25,32,29,28,20,27(B))',   label: '2 Goodwin A' },
-                purple: { path: '01,07,11,17,24,14,26,18,19,20,27,20,12,8',        label: '1 Goodwin B' },
-                red:    { path: '01,09,03,05,10,22,31,36,31,30,15,28,29,30,21,13', label: '3 Goodwin C' },
+                yellow: { path: '01,02,04,06,16,23,33,34,25,32,29,28,20,27(B)',    label: 'Gdwn_2' },
+                purple: { path: '01,07,11,17,24,14,26,18,19,20,27,20,12,8',        label: 'Gdwn_1' },
+                red:    { path: '01,09,03,05,10,22,31,36,31,30,15,28,29,30,21,13', label: 'Gdwn_3' },
                 /* NoWait paths */
-                white:  { path: '01,07,02,04,06,16,23,33,23,24,14,26,25,24,17,11', label: '1 NoWait 1' },
-                black:  { path: '01,09,01,08,12,15,28,29,32,25,26,18,19,20,27(B)', label: '2 NoWait 2' },
-                brown:  { path: '01,09,03,05,10,22,31,36,35,29,32,29,30,21,13',    label: '3 NoWait 3' }
+                white:  { path: '01,07,02,04,06,16,23,33,23,24,14,26,25,24,17,11', label: '1 NoWait_1' },
+                black:  { path: '01,09,01,08,12,15,28,29,32,25,26,18,19,20,27(B)', label: '2 NoWait_2' },
+                brown:  { path: '01,09,03,05,10,22,31,36,35,29,32,29,30,21,13',    label: '3 NoWait_3' }
             }
         },
         storm: {
