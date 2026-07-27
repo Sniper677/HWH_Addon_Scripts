@@ -1,9 +1,9 @@
-ú// ==UserScript==
+// ==UserScript==
 // @name            HWHAdvPathExt
 // @name:en         HWHAdvPathExt
 // @name:ru         HWHAdvPathExt
 // @namespace       HWHAdvPathExt
-// @version         0.0.20.3
+// @version         0.0.20.4
 // @description     Extension for HeroWarsHelper script - Modifies the adventure button to use predefined paths directly within the script, allowing modification before starting.
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
