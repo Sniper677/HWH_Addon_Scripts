@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name            HWHDungeonExt
-// @version         0.2.2.0
+// @version         0.2.3.0
 // @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHDungeonExt.user.js
 // @updateURL       https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/meta/HWHDungeonExt.meta.js
 // ==/UserScript==

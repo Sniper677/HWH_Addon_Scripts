@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.2.2.0
+// @version         0.2.3.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -345,7 +345,7 @@
                     itemId >= 47 && itemId <= 50 ? "green" :
                     "white";
                 console.log('TMNT Talent => Id: ' + itemId + ', Name: ' + itemName);
-                talentMsgReward += `<br>• <span style="color: ${itemColor};">${itemName}</span><span style="color: white;"> (<span style="color: cyan;">x${count}</span>)</span>`;
+                talentMsgReward += `<br><span style="font-size: 15px;">• <span style="color: ${itemColor};">${itemName}</span><span style="color: white;"> (<span style="color: cyan;">x${count}</span>)</span></span>`;
                 doorsAmount++;
             }
             talentMsg = `<br>TMNT Talent: ${doorsAmount}/3 ${talentMsgReward}<br>`;
