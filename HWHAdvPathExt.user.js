@@ -1,9 +1,9 @@
-// ==UserScript==
+ú// ==UserScript==
 // @name            HWHAdvPathExt
 // @name:en         HWHAdvPathExt
 // @name:ru         HWHAdvPathExt
 // @namespace       HWHAdvPathExt
-// @version         0.0.20.2
+// @version         0.0.20.3
 // @description     Extension for HeroWarsHelper script - Modifies the adventure button to use predefined paths directly within the script, allowing modification before starting.
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -220,13 +220,13 @@
             //Orion, adv #11 -> DONE
             "adv_ghirwil_3pl_hard": {
                 /* Solfors paths */
-                blue:   { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37(B)', label: 'Sol_2-3' },
-                orange: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19', label: 'Sol_1-x' },
-                green:  { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37(B)', label: 'Sol_3-1' },
+                blue:   { path: '01,02,03,06,07,12,11,15,21,27,36,39,40,41(2xB)',  label: 'Sol_2-1' },
+                orange: { path: '01,02,04,06,08,12,17,18,19,25,31,30,29,28,22,16', label: 'Sol_1-x' },
+                green:  { path: '01,02,05,06,09,13,14,20,26,32,38,35,33,34,(2xB)', label: 'Sol_3-1' },
                 /* Goodwin paths */
-                yellow: { path: '', label: 'Gdwn_A' },
-                purple: { path: '', label: 'Gdwn_B' },
-                red:    { path: '', label: 'Gdwn_C' },
+                yellow: { path: '01,02,04,06,09,13,18,17,16,22,28,29,30,31,25,19',   label: 'Gdwn_A' },
+                purple: { path: '01,02,03,06,08,12,11,15,21,27,36,34,33,35,37(2xB)', label: 'Gdwn_B' },
+                red:    { path: '01,02,05,06,10,13,14,20,26,32,38,41,40,39,37(2xB)', label: 'Gdwn_C' },
                 /* NoWait paths */
                 white:  { path: '', label: 'NoWait_1' },
                 black:  { path: '', label: 'NoWait_2' },
