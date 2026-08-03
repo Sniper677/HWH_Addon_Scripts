@@ -3,7 +3,7 @@
 // @name:en         HWHAutoBuyExt
 // @name:ru         HWHAutoBuyExt
 // @namespace       HWHAutoBuyExt
-// @version         0.2.2.1
+// @version         0.2.3.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -166,11 +166,14 @@
         }
     }
 
+    function printScriptHeader() {
+        console.log(msglog_prefix + '# -------------------- ---------- ---------- -------------------- #', msglog_format);
+        console.log(msglog_prefix + '#   ' + GM_info.script.name + ' by ' + GM_info.script.author + '   #', msglog_format);
+        console.log(msglog_prefix + '# -------------------- ---------- ---------- -------------------- #', msglog_format);
+    }
+
     // -------------------- Auto-buy core --------------------
     async function autoBuyFromShops() {
-        console.log(msglog_prefix + '#----------------------------------------', msglog_format);
-        console.log(msglog_prefix + '# ' + GM_info.script.name + ' by ' + GM_info.script.author, msglog_format);
-        console.log(msglog_prefix + '#----------------------------------------', msglog_format);
         console.log(msglog_prefix + '=== ' + GM_info.script.name + ' START ===', msglog_format);
         setProgress('Starting ' + GM_info.script.name + '...');
 
@@ -587,5 +590,39 @@
         modal.append(header, content, footer);
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
+    }
+
+    // -------------------- Auto-start execution --------------------
+    const startAutoBuy = () => {
+        printScriptHeader();
+        let attempts = 0;
+        const maxAttempts = 10; // Try for 10 seconds (10 * 1000ms)
+
+        const checkAndRun = setInterval(() => {
+            const isStartUpEnabled = getSaveVal('HWHAutoBuyExt_startUp', settings.startUp.default);
+            console.log(msglog_prefix + `${attempts}`, msglog_format);
+            attempts++;
+
+            // If it's true, or we've run out of time, proceed
+            if (isStartUpEnabled || attempts >= maxAttempts) {
+                clearInterval(checkAndRun);
+
+                if (isStartUpEnabled) {
+                    console.log(msglog_prefix + GM_info.script.name + ': Startup enabled. Executing in 15s...', msglog_format);
+                    setTimeout(() => {
+                        autoBuyFromShops();
+                    }, 15000);
+                } else {
+                    console.log(msglog_prefix + 'Startup Setting Check: false (Storage ready, but feature disabled)', msglog_format);
+                }
+            }
+        }, 1000);
+    };
+
+    // Ensure the browser has finished loading the page before checking storage
+    if (document.readyState === 'complete') {
+        startAutoBuy();
+    } else {
+        window.addEventListener('load', startAutoBuy);
     }
 })();
