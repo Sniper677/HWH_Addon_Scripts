@@ -3,7 +3,7 @@
 // @name:en         HWHDungeonExt
 // @name:ru         HWHDungeonExt
 // @namespace       HWHDungeonExt
-// @version         0.2.3.0
+// @version         0.2.4.0
 // @description     Extension for HeroWarsHelper script
 // @description:en  Extension for HeroWarsHelper script
 // @description:ru  Расширение для скрипта HeroWarsHelper
@@ -12,6 +12,7 @@
 // @homepage        https://github.com/Sniper677/HWH_Addon_Scripts
 // @icon            https://cdn0.iconfinder.com/data/icons/superheros-1/512/Superheroes-04-512.png
 // @match           https://www.hero-wars.com/*
+// @match           https://www.hero-wars.cn/*
 // @match           https://apps-1701433570146040.apps.fbsbx.com/*
 // @run-at          document-start
 // @downloadURL     https://github.com/Sniper677/HWH_Addon_Scripts/raw/refs/heads/main/HWHDungeonExt.user.js
@@ -108,6 +109,7 @@
             earth: 'color: #2ecc71;',
             light: 'color: #f1c40f;',
             dark: 'color: #9b59b6;',
+            distortion: 'color: #5a39b8',
             neutral: 'color: yellow;',
             yellow: 'color: #ffff;',
             green: 'color: #0b0;',
@@ -859,6 +861,7 @@
                 { element: 'earth', color: '#2ecc71', icon: '🌍', label: 'EARTH' },
                 { element: 'light', color: '#f1c40f', icon: '☀️', label: 'LIGHT' },
                 { element: 'dark', color: '#9b59b6', icon: '🌑', label: 'DARK' },
+                { element: 'distortion', color: '#5a39b8', icon: '🌀', label: 'DISTOR' },
             ];
 
             const titans = titansStates;
